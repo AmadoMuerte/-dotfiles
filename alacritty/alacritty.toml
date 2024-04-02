@@ -1,0 +1,13 @@
+[font]
+size = 12
+
+[shell]
+program = "/bin/zsh"
+
+
+[[keyboard.bindings]]
+key = "NumpadEnter"
+chars = "\r"
+
+[window]
+opacity = 0.7
