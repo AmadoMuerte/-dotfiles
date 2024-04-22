@@ -515,7 +515,7 @@
     "exec": "checkupdates | wc -l",
     "exec-if": "[[ $(checkupdates | wc -l) ]]",
     "interval": 15,
-    "on-click": "kitty -T update paru -Syu || yay -Syu && notify-send 'The system has been updated'",
+    "on-click": "alacritty -T update paru -Syu || yay -Syu && notify-send 'The system has been updated'",
 },
     
 "custom/weather": {

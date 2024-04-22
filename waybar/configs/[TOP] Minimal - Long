@@ -16,17 +16,17 @@
 	"margin-right": 8,
 	"modules-left": [
 		"hyprland/workspaces",
-		"mpris",
-		"tray",
+		// "mpris",
+		"tray"
 	],
 	"modules-center": [
-		"group/motherboard",
-		
+		"group/motherboard"
 	],
 	"modules-right": [
+		"custom/updater",
 		"clock",
-		"group/laptop",
 		"group/audio",
 		"network",
-	],
+		"group/laptop"
+	]
 }
