@@ -6,9 +6,9 @@
     "passthrough": false,
     "gtk-layer-shell": true,
     "height": 30,
-    "modules-left": ["hyprland/workspaces", "tray"],
+    "modules-left": ["hyprland/workspaces"],
     "modules-center": ["clock", "custom/notification"],
-    "modules-right": ["memory", "cpu", "temperature","battery","network","bluetooth","backlight","pulseaudio","pulseaudio#microphone"],
+    "modules-right": ["memory", "cpu", "temperature","battery","network","bluetooth","backlight","pulseaudio","pulseaudio#microphone", "tray"],
     "hyprland/window": {
         "format": "{}"
     },
@@ -121,7 +121,7 @@
     },
 
     "network": {
-        // "interface": "wlp2*", // (Optional) To force the use of this interface
+        "interface": "wlp2*", // (Optional) To force the use of this interface
         "format-wifi": "  {signalStrength}%",
         "format-ethernet": "{ipaddr}/{cidr} ",
         "tooltip-format": "{essid} - {ifname} via {gwaddr} ",
@@ -130,14 +130,28 @@
         "format-alt": "{ifname}:{essid} {ipaddr}/{cidr}"
     },
 
+    "custom/vpn": {
+        "format": "{}",
+        "exec": "bash /home/amado/.config/sway/tools/vpnupdown status",
+        // "exec-if": "test -d /proc/sys/net/ipv4/conf/tun0",
+        "tooltip": "true",
+        "return-type": "json",
+        "interval": 1,
+        "on-click": "bash /home/amado/.config/sway/tools/vpnupdown toggle"
+     },
+
+
     "bluetooth": {
-	    "format": " {status}",
-	    "format-disabled": "", // an empty format will hide the module
-	    "format-connected": " {num_connections}",
-	    "tooltip-format": "{device_alias}",
-	    "tooltip-format-connected": " {device_enumerate}",
-	    "tooltip-format-enumerate-connected": "{device_alias}"
-    },
+	"format": " {status}",
+	"format-connected": " {device_alias}",
+	"format-connected-battery": " {device_alias} {device_battery_percentage}%",
+	// "format-device-preference": [ "device1", "device2" ], // preference list deciding the displayed device
+	"tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+	"tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+	"tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+	"tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+        "on-click": "overskride"
+     },
 
     "custom/notification": {
         "tooltip": false,
