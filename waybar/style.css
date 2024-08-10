@@ -1,7 +1,6 @@
 * {
     border: none;
     border-radius: 0px;
-    font-family: "JetBrainsMono Nerd Font";
     font-weight: bold;
     font-size: 11px;
     min-height: 0;
@@ -64,17 +63,24 @@ tooltip {
 #workspaces,
 #tray,
 #custom-notification,
+#custom-spotify,
 #backlight {
     background: #1e1e2e;
     opacity: 0.8;
     padding: 0px 10px;
     margin: 0;
+    font-family: "NotoSansMono Nerd Font";
     margin-top: 5px;
     border: 1px solid #181825;
 }
 
+#custom-spotify {
+    margin: 0 10px;
+    color: #cba6f7;
+    border-radius: 20px;
+}
+
 #custom-notification {
-    font-family: "NotoSansMono Nerd Font";
     color: #fab387;
     border-radius: 0px 20px 20px 0px;
 }
