@@ -8,7 +8,7 @@
     "height": 30,
     "modules-left": ["hyprland/workspaces", "custom/spotify"],
     "modules-center": ["clock", "custom/notification"],
-    "modules-right": ["memory", "cpu","battery","network","bluetooth","backlight","pulseaudio","pulseaudio#microphone", "tray"],
+    "modules-right": ["memory", "cpu","battery","network","custom/vpnstatus","bluetooth","backlight","pulseaudio","pulseaudio#microphone", "tray"],
     "hyprland/window": {
         "format": "{}"
     },
@@ -105,15 +105,15 @@
     },
 
     "network": {
-        "interface": "wlp2*", // (Optional) To force the use of this interface
+        "interface": "wlp2*",
         "format-wifi": "   {signalStrength}%",
         "format-ethernet": "{ipaddr}/{cidr} ",
         "tooltip-format": "{essid} - {ifname} via {gwaddr} ",
         "format-linked": "{ifname} (No IP) ",
         "format-disconnected": "Disconnected ⚠",
-        "format-alt": "{ifname}:{essid} {ipaddr}/{cidr}"
+        "format-alt": "{ifname}:{essid} {ipaddr}/{cidr}",
     },
-
+  
     "bluetooth": {
 	"format": "  {status}",
 	"format-connected": " {device_alias}",
@@ -145,6 +145,13 @@
         "on-click": "swaync-client -t -sw",
         "on-click-right": "swaync-client -d -sw",
         "escape": true
+    },
+
+    "custom/vpnstatus": {
+      "format": "{}",
+      "return-type": "json",
+      "exec": "~/.config/waybar/scripts/check_vpn.sh",
+      "on-click": "~/.config/waybar/scripts/toggle_vpn.sh"
     },
 
     "custom/spotify": {
