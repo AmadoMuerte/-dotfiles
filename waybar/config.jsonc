@@ -8,7 +8,7 @@
     "height": 30,
     "modules-left": ["hyprland/workspaces", "custom/spotify"],
     "modules-center": ["clock", "custom/notification"],
-    "modules-right": ["memory", "cpu", "temperature","battery","network","bluetooth","backlight","pulseaudio","pulseaudio#microphone", "tray"],
+    "modules-right": ["memory", "cpu","battery","network","bluetooth","backlight","pulseaudio","pulseaudio#microphone", "tray"],
     "hyprland/window": {
         "format": "{}"
     },
@@ -29,6 +29,15 @@
             "9": [],
             "10": []
         }
+    },
+
+    "memory": {
+      "on-click": "kitty nvtop"
+
+    },
+
+    "cpu": {
+      "on-click": "kitty nvtop"
     },
 
     "tray": {
@@ -93,13 +102,6 @@
         "on-scroll-down": "pamixer --default-source -d 5",
         "scroll-step": 5,
 	"on-click": "pavucontrol"
-    },
-    
-    "temperature": {
-        "thermal-zone": 1,
-        "format": "{temperatureF}°F ",
-        "critical-threshold": 80,
-        "format-critical": "{temperatureC}°C "
     },
 
     "network": {
