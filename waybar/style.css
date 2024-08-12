@@ -64,6 +64,7 @@ tooltip {
 #tray,
 #custom-notification,
 #custom-vpnstatus,
+#custom-wakatime,
 #custom-spotify,
 #backlight {
     background: #1e1e2e;
@@ -73,6 +74,19 @@ tooltip {
     font-family: "NotoSansMono Nerd Font";
     margin-top: 5px;
     border: 1px solid #181825;
+}
+
+#custom-wakatime {
+    color: #a46df6;
+    border-radius: 20px;
+    margin-left: 5px;
+    border-right: 0px;
+    transition: 0.3s;
+    padding-left: 7px;
+}
+
+#custom-wakatime {
+    color: #fab387;
 }
 
 #custom-spotify {

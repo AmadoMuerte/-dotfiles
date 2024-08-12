@@ -7,7 +7,7 @@
     "gtk-layer-shell": true,
     "height": 30,
     "modules-left": ["hyprland/workspaces", "custom/spotify"],
-    "modules-center": ["clock", "custom/notification"],
+    "modules-center": ["clock", "custom/notification", "custom/wakatime"],
     "modules-right": ["memory", "cpu","battery","network","custom/vpnstatus","bluetooth","backlight","pulseaudio","pulseaudio#microphone", "tray"],
     "hyprland/window": {
         "format": "{}"
@@ -95,8 +95,8 @@
 
     "pulseaudio#microphone": {
         "format": "{format_source}",
-        "format-source": "Mic: {volume}%",
-        "format-source-muted": "Mic: Muted",
+        "format-source": "\uD83C\uDF99\uFE0F {volume}%",
+        "format-source-muted": "\uD83C\uDF99\uFE0F Muted",
         "on-click": "pamixer --default-source -t",
         "on-scroll-up": "pamixer --default-source -i 5",
         "on-scroll-down": "pamixer --default-source -d 5",
@@ -111,7 +111,7 @@
         "tooltip-format": "{essid} - {ifname} via {gwaddr} ",
         "format-linked": "{ifname} (No IP) ",
         "format-disconnected": "Disconnected ⚠",
-        "format-alt": "{ifname}:{essid} {ipaddr}/{cidr}",
+        "format-alt": "{ifname}:{essid} {ipaddr}/{cidr}"
     },
   
     "bluetooth": {
@@ -154,8 +154,18 @@
       "on-click": "~/.config/waybar/scripts/toggle_vpn.sh"
     },
 
+    "custom/wakatime": {
+        "format": "{}{}",
+        "return-type": "json",
+        "exec": "cd ~/Projects/WakaTimeModule/ && go run ./cmd/main.go",
+        "on-click": "playerctl -p spotify play-pause",
+        "on-scroll-up": "playerctl -p spotify next",
+        "on-scroll-down": "playerctl -p spotify previous",
+        "exec-if": "pgrep spotfiy"
+    },
+
     "custom/spotify": {
-      "format": "{} ",
+      "format": "{}  ",
       "exec": "~/.config/waybar/scripts/mediaplayer.sh",
       "return-type": "json",
       "on-click": "playerctl -p spotify play-pause",
