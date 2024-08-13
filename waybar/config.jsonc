@@ -157,11 +157,9 @@
     "custom/wakatime": {
         "format": "{}{}",
         "return-type": "json",
-        "exec": "cd ~/Projects/WakaTimeModule/ && go run ./cmd/main.go",
-        "on-click": "playerctl -p spotify play-pause",
-        "on-scroll-up": "playerctl -p spotify next",
-        "on-scroll-down": "playerctl -p spotify previous",
-        "exec-if": "pgrep spotfiy"
+        "exec": "~/.config/waybar/WakaTimeModule/main en",
+        "interval": 300,
+	"on-click": "firefox https://wakatime.com/dashboard"
     },
 
     "custom/spotify": {
