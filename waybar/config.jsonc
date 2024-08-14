@@ -6,8 +6,8 @@
     "passthrough": false,
     "gtk-layer-shell": true,
     "height": 30,
-    "modules-left": ["hyprland/workspaces", "custom/spotify"],
-    "modules-center": ["clock", "custom/notification", "custom/wakatime"],
+    "modules-left": ["hyprland/workspaces", "custom/wakatime", "custom/spotify"],
+    "modules-center": ["clock"],
     "modules-right": ["memory", "cpu","battery","network","custom/vpnstatus","bluetooth","backlight","pulseaudio","pulseaudio#microphone", "tray"],
     "hyprland/window": {
         "format": "{}"
