@@ -147,7 +147,7 @@ tooltip {
 
 #clock {
     color: #fab387;
-    border-radius: 20px;
+    border-radius: 20px 0 0 20px;
     margin-left: 5px;
     border-right: 0px;
     transition: 0.3s;
