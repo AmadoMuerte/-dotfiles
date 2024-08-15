@@ -10,21 +10,19 @@
 #              it indicates that the VPN is disconnected. The status is updated every 5 seconds.
 
 while true; do
-    connWireguard=$(nmcli connection show --active | grep wireguard)
-    connVPN=$(nmcli connection show --active | grep vpn)
-    connOpenVPN=$(nmcli connection show --active | grep openvpn)
+  connections=$(nmcli connection show --active)
 
-    if [ -n "$connWireguard" ]; then
-        vpnName=$(echo "$connWireguard" | awk '{print $1}')
-        echo "{\"text\": \"$vpnName 🛡️ (Wireguard)\", \"class\": \"custom-vpnstatus\", \"alt\": \"connected\"}"
-    elif [ -n "$connVPN" ]; then
-        vpnName=$(echo "$connVPN" | awk '{print $1}')
-        echo "{\"text\": \"$vpnName 🛡️ (VPN)\", \"class\": \"custom-vpnstatus\", \"alt\": \"connected\"}"
-    elif [ -n "$connOpenVPN" ]; then
-        vpnName=$(echo "$connOpenVPN" | awk '{print $1}')
-        echo "{\"text\": \"$vpnName 🛡️ (OpenVPN)\", \"class\": \"custom-vpnstatus\", \"alt\": \"connected\"}"
-    else
-        echo "{\"text\": \"Disconnected ❌\", \"class\": \"custom-vpnstatus\", \"alt\": \"disconnected\"}"
-    fi
-    sleep 5
+  if grep -q "wireguard" <<< "$connections"; then
+    vpnName=$(grep "wireguard" <<< "$connections" | awk '{print $1}')
+    echo "{\"text\": \"$vpnName ✞\", \"class\": \"custom-vpnstatus\", \"alt\": \"connected\"}"
+  elif grep -q "vpn" <<< "$connections"; then
+    vpnName=$(grep "vpn" <<< "$connections" | awk '{print $1}')
+    echo "{\"text\": \"$vpnName ✞\", \"class\": \"custom-vpnstatus\", \"alt\": \"connected\"}"
+  elif grep -q "openvpn" <<< "$connections"; then
+    vpnName=$(grep "openvpn" <<< "$connections" | awk '{print $1}')
+    echo "{\"text\": \"$vpnName ✞\", \"class\": \"custom-vpnstatus\", \"alt\": \"connected\"}"
+  else
+    echo "{\"text\": \"Not connected ✞\", \"class\": \"custom-vpnstatus\", \"alt\": \"disconnected\"}"
+  fi
+  sleep 5
 done
