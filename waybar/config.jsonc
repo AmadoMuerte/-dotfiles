@@ -46,9 +46,9 @@
     },
 
     "clock": {
-        "timezone": "Asia/Vladivostok",
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format-alt": "{:%Y-%m-%d}"
+      "timezone": "Asia/Vladivostok",
+      "tooltip-format": "<big>{:%d-%m-%Y %H:%M:%S}</big>\n<tt><small>{calendar}</small></tt>",
+      "format-alt": "{:%d-%m-%Y %H:%M:%S}"
     },
 
     "backlight": {
