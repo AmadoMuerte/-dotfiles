@@ -101,7 +101,7 @@ tooltip {
 }
 
 #memory {
-    border-radius: 20px 0px 0px 20px;
+    border-radius: 0px 0px 0px 0px;
     border-left: 0px;
     border-right: 0px;
 }
@@ -193,4 +193,8 @@ tooltip {
     border-radius: 20px;
     border-right: 0px;
     margin-left: 0px;
+}
+
+#custom-vpnstatus {
+    border-radius:20px 0px 0px 20px;
 }
