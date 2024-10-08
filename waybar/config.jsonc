@@ -7,7 +7,7 @@
     "gtk-layer-shell": true,
     "height": 30,
     "modules-left": ["hyprland/workspaces", "custom/wakatime", "custom/spotify"],
-    "modules-center": ["clock", "custom/notification"],
+    "modules-center": ["clock"],
     "modules-right": ["temperature","memory", "cpu","battery","custom/vpnstatus","bluetooth","backlight","pulseaudio","pulseaudio#microphone", "tray"],
     "hyprland/window": {
         "format": "{}"
@@ -32,12 +32,12 @@
     },
 
     "memory": {
-      "on-click": "kitty nvtop"
+      "on-click": "alacritty nvtop"
 
     },
 
     "cpu": {
-      "on-click": "kitty nvtop"
+      "on-click": "alacritty nvtop"
     },
 
     "tray": {

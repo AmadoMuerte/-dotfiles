@@ -2,7 +2,7 @@
     border: none;
     border-radius: 0px;
     font-weight: bold;
-    font-size: 11px;
+    font-size: 13px;
     min-height: 0;
     transition: 0.3s;
 }
@@ -71,7 +71,7 @@ tooltip {
     opacity: 0.8;
     padding: 0px 10px;
     margin: 0;
-    font-family: "NotoSansMono Nerd Font";
+    font-family: "Jetbrains Mono Nerd";
     margin-top: 5px;
     border: 1px solid #181825;
 }
