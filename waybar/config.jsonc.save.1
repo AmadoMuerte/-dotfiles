@@ -6,27 +6,13 @@
     "passthrough": false,
     "gtk-layer-shell": true,
     "height": 30,
-    "modules-left": [
-        "hyprland/workspaces",
-        "custom/wakatime",
-	"custom/spotify"
-    ],
-    "modules-center": [
-        "clock"
-    ],
-    "modules-right": [
-        "temperature",
-        "memory",
-        "cpu",
-        "battery",
-        "backlight",
-        "pulseaudio",
-        "pulseaudio#microphone",
-        "tray"
-    ],
+    "modules-left": ["hyprland/workspaces", "custom/wakatime", "custom/spotify"],
+    "modules-center": ["clock"],
+    "modules-right": ["temperature","memory", "cpu","battery","backlight","pulseaudio","pulseaudio#microphone","tray"],
     "hyprland/window": {
         "format": "{}"
     },
+
     "wlr/workspaces": {
         "disable-scroll": true,
         "all-outputs": true,
@@ -44,39 +30,36 @@
             "10": []
         }
     },
+
     "memory": {
-        "format": "🖥 {used} MiB", // Черно-белая иконка для памяти - компьютер
-        "on-click": "alacritty -e nvtop"
+      "on-click": "alacritty nvtop"
+
     },
+
     "cpu": {
-        "format": "🎟 {usage}%", // Шестеренка для процессора
-        "on-click": "alacritty -e nvtop"
+      "on-click": "alacritty nvtop"
     },
-    "temperature": {
-        "format": "🌡 {temperatureC}°C", // Черно-белая иконка для температуры - термометр
-        "on-click": "alacritty -e nvtop"
-    },
+
     "tray": {
         "icon-size": 17,
         "spacing": 10
     },
+
     "clock": {
-        "timezone": "Asia/Vladivostok",
-        "tooltip-format": "<big>{:%d-%m-%Y %H:%M:%S}</big>\n<tt><small>{calendar}</small></tt>",
-        "format-alt": "{:%d-%m-%Y %H:%M:%S}"
+      "timezone": "Asia/Vladivostok",
+      "tooltip-format": "<big>{:%d-%m-%Y %H:%M:%S}</big>\n<tt><small>{calendar}</small></tt>",
+      "format-alt": "{:%d-%m-%Y %H:%M:%S}"
     },
+
     "backlight": {
         "device": "intel_backlight",
         "format": "{icon}  {percent}%",
-        "format-icons": [
-            "󰃞",
-            "󰃟",
-            "󰃠"
-        ],
+        "format-icons": ["󰃞", "󰃟", "󰃠"],
         "on-scroll-up": "brightnessctl set 1%+",
         "on-scroll-down": "brightnessctl set 1%-",
         "min-length": 6
     },
+
     "battery": {
         "states": {
             "good": 95,
@@ -87,20 +70,9 @@
         "format-charging": " {capacity}%",
         "format-plugged": " {capacity}%",
         "format-alt": "{time} {icon}",
-        "format-icons": [
-            "󰂎",
-            "󰁺",
-            "󰁻",
-            "󰁼",
-            "󰁽",
-            "󰁾",
-            "󰁿",
-            "󰂀",
-            "󰂁",
-            "󰂂",
-            "󰁹"
-        ]
+        "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
     },
+
     "pulseaudio": {
         "format": "{icon}  {volume}%",
         "tooltip": false,
@@ -116,14 +88,11 @@
             "phone": "",
             "portable": "",
             "car": "",
-            "default": [
-                "",
-                "",
-                ""
-            ]
+            "default": ["", "", ""]
         },
-        "on-click": "pavucontrol"
+	"on-click": "pavucontrol"
     },
+
     "pulseaudio#microphone": {
         "format": "{format_source}",
         "format-source": "\uD83C\uDF99\uFE0F {volume}%",
@@ -132,8 +101,9 @@
         "on-scroll-up": "pamixer --default-source -i 5",
         "on-scroll-down": "pamixer --default-source -d 5",
         "scroll-step": 5,
-        "on-click": "pavucontrol"
+	"on-click": "pavucontrol"
     },
+
     "network": {
         "interface": "wlp2*",
         "format-wifi": "   {signalStrength}%",
@@ -143,16 +113,19 @@
         "format-disconnected": "Disconnected ⚠",
         "format-alt": "{ifname}:{essid} {ipaddr}/{cidr}"
     },
+  
     "bluetooth": {
-        "format": "  {status}",
-        "format-connected": " {device_alias}",
-        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
-        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
-        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
-        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
-        "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
+	"format": "  {status}",
+	"format-connected": " {device_alias}",
+	"format-connected-battery": " {device_alias} {device_battery_percentage}%",
+	// "format-device-preference": [ "device1", "device2" ], // preference list deciding the displayed device
+	"tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+	"tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+	"tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+	"tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
         "on-click": "overskride"
-    },
+     },
+
     "custom/notification": {
         "tooltip": false,
         "format": "{icon} {}",
@@ -173,25 +146,29 @@
         "on-click-right": "swaync-client -d -sw",
         "escape": true
     },
+
     "custom/vpnstatus": {
-        "format": "{}",
-        "return-type": "json",
-        "exec": "~/.config/waybar/scripts/check_vpn.sh",
-        "on-click": "~/.config/waybar/scripts/toggle_vpn.sh"
+      "format": "{}",
+      "return-type": "json",
+      "exec": "~/.config/waybar/scripts/check_vpn.sh",
+      "on-click": "~/.config/waybar/scripts/toggle_vpn.sh"
     },
+
     "custom/wakatime": {
         "format": "{}{}",
         "return-type": "json",
         "exec": "~/.config/waybar/WakaTimeModule/main en",
         "interval": 1200,
-        "on-click": "firefox https://wakatime.com/dashboard"
+	"on-click": "firefox https://wakatime.com/dashboard"
     },
+
     "custom/spotify": {
-        "exec": "/usr/bin/python3 ~/.config/waybar/scripts/mediaplayer.py --player spotify",
-        "format": "{}",
-        "return-type": "json",
-        "on-click": "playerctl play-pause",
-        "on-scroll-up": "playerctl next",
-        "on-scroll-down": "playerctl previous"
-    },
+      "format": "{}  ",
+      "exec": "~/.config/waybar/scripts/mediaplayer.sh",
+      "return-type": "json",
+      "on-click": "playerctl -p spotify play-pause",
+      "on-scroll-up": "playerctl -p spotify next",
+      "on-scroll-down": "playerctl -p spotify previous",
+      "exec-if": "pgrep spotfiy"
+    }
 }
