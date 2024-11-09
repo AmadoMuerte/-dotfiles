@@ -8,7 +8,7 @@
     "height": 30,
     "modules-left": ["hyprland/workspaces", "custom/wakatime", "custom/spotify"],
     "modules-center": ["clock"],
-    "modules-right": ["temperature","memory", "cpu","battery","custom/vpnstatus","bluetooth","backlight","pulseaudio","pulseaudio#microphone", "tray"],
+    "modules-right": ["temperature","memory", "cpu","battery","backlight","pulseaudio","pulseaudio#microphone","tray"],
     "hyprland/window": {
         "format": "{}"
     },
@@ -158,7 +158,7 @@
         "format": "{}{}",
         "return-type": "json",
         "exec": "~/.config/waybar/WakaTimeModule/main en",
-        "interval": 300,
+        "interval": 1200,
 	"on-click": "firefox https://wakatime.com/dashboard"
     },
 

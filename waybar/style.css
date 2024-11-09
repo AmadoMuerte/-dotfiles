@@ -2,7 +2,7 @@
     border: none;
     border-radius: 0px;
     font-weight: bold;
-    font-size: 13px;
+    font-size: 15px;
     min-height: 0;
     transition: 0.3s;
 }
@@ -147,7 +147,7 @@ tooltip {
 
 #clock {
     color: #fab387;
-    border-radius: 20px 0 0 20px;
+    border-radius: 20px;
     margin-left: 5px;
     border-right: 0px;
     transition: 0.3s;
@@ -163,7 +163,7 @@ tooltip {
 
 #bluetooth {
     color: #89b4fa;
-    border-radius: 0 20px 20px 0;
+    border-radius: 20px 20px 20px 20px;
     margin-right: 10px;
 } 
 
@@ -196,5 +196,6 @@ tooltip {
 }
 
 #custom-vpnstatus {
-    border-radius:20px 0px 0px 20px;
+    border-radius:20px 20px 20px 20px;
+    margin-right: 10px;
 }
