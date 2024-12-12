@@ -12,7 +12,8 @@
 	"custom/spotify"
     ],
     "modules-center": [
-        "clock"
+	"clock",
+	"clock#Moscow"
     ],
     "modules-right": [
         "temperature",
@@ -45,26 +46,36 @@
         }
     },
     "memory": {
-        "format": "🖥 {used} MiB", // Черно-белая иконка для памяти - компьютер
-        "on-click": "alacritty -e nvtop"
+        "format": "🖥 {used} MiB",
+        "on-click": "alacritty -e btop"
     },
     "cpu": {
-        "format": "🎟 {usage}%", // Шестеренка для процессора
-        "on-click": "alacritty -e nvtop"
+        "format": "🎟 {usage}%",
+        "on-click": "alacritty -e btop"
     },
     "temperature": {
-        "format": "🌡 {temperatureC}°C", // Черно-белая иконка для температуры - термометр
-        "on-click": "alacritty -e nvtop"
+        "format": "🌡 {temperatureC}°C",
+        "on-click": "alacritty -e btop"
     },
     "tray": {
         "icon-size": 17,
         "spacing": 10
     },
     "clock": {
-        "timezone": "Asia/Vladivostok",
-        "tooltip-format": "<big>{:%d-%m-%Y %H:%M:%S}</big>\n<tt><small>{calendar}</small></tt>",
-        "format-alt": "{:%d-%m-%Y %H:%M:%S}"
+        "interval": 60,
+        "format": "KHV {:%H:%M}",
+        "timezones": [
+            "Asia/Vladivostok"
+        ],
+        "tooltip-format": "<big>{:%d-%m-%Y %H:%M:%S}</big>"
     },
+    "clock#Moscow": {
+    	"interval": 60,
+    	"format": "MSK {:%H:%M}",
+    	"timezone": "Europe/Moscow",
+    	"tooltip-format": "<big>{:%d-%m-%Y %H:%M:%S}</big>"
+    },
+
     "backlight": {
         "device": "intel_backlight",
         "format": "{icon}  {percent}%",
