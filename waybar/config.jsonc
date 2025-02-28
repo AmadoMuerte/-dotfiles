@@ -197,12 +197,4 @@
         "interval": 1200,
         "on-click": "firefox https://wakatime.com/dashboard"
     },
-    "custom/spotify": {
-        "exec": "/usr/bin/python3 ~/.config/waybar/scripts/mediaplayer.py --player spotify",
-        "format": "{}",
-        "return-type": "json",
-        "on-click": "playerctl play-pause",
-        "on-scroll-up": "playerctl next",
-        "on-scroll-down": "playerctl previous"
-    },
 }
