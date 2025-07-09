@@ -1,19 +1,21 @@
-@define-color background #001E23;
-@define-color foreground #b4c8be;
+/* Основные */
+@define-color background #0D1117;  /* Тёмный графитовый */
+@define-color foreground #B3BECB;  /* Светло-серый (текст) */
 
-@define-color color0  #001E23;
-@define-color color1  #4D726B;
-@define-color color2  #5C8277;
-@define-color color3  #648A7C;
-@define-color color4  #77A17E;
-@define-color color5  #80A67F;
-@define-color color6  #6E9485;
-@define-color color7  #b4c8be;
-@define-color color8  #7d8c85;
-@define-color color9  #4D726B;
-@define-color color10 #5C8277;
-@define-color color11 #648A7C;
-@define-color color12 #77A17E;
-@define-color color13 #80A67F;
-@define-color color14 #6E9485;
-@define-color color15 #b4c8be;
+/* Серые с холодным подтоном */
+@define-color color0  #0D1117;    /* Основной фон (как background) */
+@define-color color1  #2A313D;    /* Тёмный серо-синий */
+@define-color color2  #3A4554;    /* Серый с синевой */
+@define-color color3  #4E5A6B;    /* Средний серо-голубой */
+@define-color color4  #5C6B81;    /* Серый с лёгким синим */
+@define-color color5  #6D7E94;    /* Светлее предыдущего */
+@define-color color6  #7F8FA6;    /* Серо-голубой светлый */
+@define-color color7  #B3BECB;    /* Светло-серый (как foreground) */
+@define-color color8  #8D99A8;    /* Промежуточный серый */
+@define-color color9  #2A313D;    /* Как color1 */
+@define-color color10 #3A4554;    /* Как color2 */
+@define-color color11 #4E5A6B;    /* Как color3 */
+@define-color color12 #5C6B81;    /* Как color4 */
+@define-color color13 #6D7E94;    /* Как color5 */
+@define-color color14 #7F8FA6;    /* Как color6 */
+@define-color color15 #B3BECB;    /* Как color7 */

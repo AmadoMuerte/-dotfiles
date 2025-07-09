@@ -1,8 +1,8 @@
 window {
-     all:unset;
+    all:unset;
     padding: 20px;
     border-radius: 10px;
-    background-color: alpha(#0b0b0e,.9);
+    background: alpha(#0D1117,.9);
 }
 
 #input {
@@ -78,5 +78,5 @@ window {
     border: none;
     border: none;
     border-radius: 10px;
-    background-color: alpha(#292929,.9);
+    background-color: alpha(#2A313D,.9);
 }

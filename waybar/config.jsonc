@@ -7,42 +7,36 @@
     "gtk-layer-shell": true,
     "height": 30,
     "modules-left": [
-        "hyprland/workspaces",
+        "clock",
+	    "clock#Moscow",
         "custom/wakatime"
     ],
     "modules-center": [
-	"clock",
-	"clock#Moscow"
+    "hyprland/workspaces"
     ],
     "modules-right": [
         "temperature",
         "memory",
         "cpu",
         "battery",
-        "backlight",
         "pulseaudio",
         "pulseaudio#microphone",
+        "backlight",
         "tray"
     ],
+     "hyprland/workspaces": {
+            "format": "{icon}",
+            "format-icons": {
+                "active": "",
+                "default": "",
+                "empty": ""
+            },
+            "persistent-workspaces": {
+                "*": [ 1,2,3,4,5 ]
+            }
+        },
     "hyprland/window": {
         "format": "{}"
-    },
-    "wlr/workspaces": {
-        "disable-scroll": true,
-        "all-outputs": true,
-        "on-click": "activate",
-        "persistent_workspaces": {
-            "1": [],
-            "2": [],
-            "3": [],
-            "4": [],
-            "5": [],
-            "6": [],
-            "7": [],
-            "8": [],
-            "9": [],
-            "10": []
-        }
     },
     "memory": {
         "format": "🖥 {used} MiB",
