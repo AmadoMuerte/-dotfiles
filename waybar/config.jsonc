@@ -8,8 +8,7 @@
     "height": 30,
     "modules-left": [
         "hyprland/workspaces",
-        "custom/wakatime",
-	"custom/spotify"
+        "custom/wakatime"
     ],
     "modules-center": [
 	"clock",
@@ -193,7 +192,8 @@
     "custom/wakatime": {
         "format": "{}{}",
         "return-type": "json",
-        "exec": "~/.config/waybar/WakaTimeModule/main en",
+        // create a file ~/.config/waybar/wakatime.cfg and put your wakatime api key
+        "exec": "bash -c 'echo $(<~/.config/waybar/wakatime.cfg) | xargs -I {} ~/.config/waybar/waybar-code-stats en {}'",
         "interval": 1200,
         "on-click": "firefox https://wakatime.com/dashboard"
     },
