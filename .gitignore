@@ -1,0 +1,15 @@
+/*
+
+!.gitignore
+
+!/hypr/
+!/waybar/
+!/wofi/
+!/alacritty/
+
+/hypr/monitors.conf
+/hypr/workspaces.conf
+/hypr/hyprland.conf.save
+
+/waybar/config.jsonc.save
+/waybar/wakatime.cfg
