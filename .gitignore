@@ -6,6 +6,7 @@
 !/waybar/
 !/wofi/
 !/alacritty/
+!/mainColors/
 
 /hypr/monitors.conf
 /hypr/workspaces.conf
