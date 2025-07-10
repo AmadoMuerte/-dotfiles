@@ -12,7 +12,7 @@
         "custom/wakatime"
     ],
     "modules-center": [
-    "hyprland/workspaces"
+    "hyprland/workspaces",
     ],
     "modules-right": [
         "temperature",
@@ -22,8 +22,29 @@
         "pulseaudio",
         "pulseaudio#microphone",
         "backlight",
-        "tray"
+        "tray",
+        "custom/notification"
     ],
+    "custom/notification": {
+        "tooltip": true,
+        "format": "{icon}",
+        "format-icons": {
+        "notification": "<span foreground='red'><sup></sup></span>",
+        "none": "",
+        "dnd-notification": "<span foreground='red'><sup></sup></span>",
+        "dnd-none": "",
+        "inhibited-notification": "<span foreground='red'><sup></sup></span>",
+        "inhibited-none": "",
+        "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
+        "dnd-inhibited-none": ""
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true
+    },
      "hyprland/workspaces": {
             "format": "{icon}",
             "format-icons": {
@@ -32,14 +53,14 @@
                 "empty": ""
             },
             "persistent-workspaces": {
-                "*": [ 1,2,3,4,5 ]
+                "*": [ 1,2,3,4,5, 6, 7 ]
             }
         },
     "hyprland/window": {
         "format": "{}"
     },
     "memory": {
-        "format": "🖥 {used} MiB",
+        "format": "🖥 {used} MB",
         "on-click": "alacritty -e btop"
     },
     "cpu": {
@@ -68,7 +89,6 @@
     	"timezone": "Europe/Moscow",
     	"tooltip-format": "<big>{:%d-%m-%Y %H:%M:%S}</big>"
     },
-
     "backlight": {
         "device": "intel_backlight",
         "format": "{icon}  {percent}%",
@@ -106,7 +126,7 @@
         ]
     },
     "pulseaudio": {
-        "format": "{icon}  {volume}%",
+        "format": "{icon}   {volume}%",
         "tooltip": false,
         "format-muted": " Muted",
         "on-click": "pamixer -t",
@@ -156,32 +176,6 @@
         "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
         "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
         "on-click": "overskride"
-    },
-    "custom/notification": {
-        "tooltip": false,
-        "format": "{icon} {}",
-        "format-icons": {
-            "notification": "  <span foreground='red'><sup></sup></span>",
-            "none": " ",
-            "dnd-notification": "  <span foreground='red'><sup></sup></span>",
-            "dnd-none": "",
-            "inhibited-notification": "  <span foreground='red'><sup></sup></span>",
-            "inhibited-none": "  ",
-            "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
-            "dnd-inhibited-none": "  "
-        },
-        "return-type": "json",
-        "exec-if": "which swaync-client",
-        "exec": "swaync-client -swb",
-        "on-click": "swaync-client -t -sw",
-        "on-click-right": "swaync-client -d -sw",
-        "escape": true
-    },
-    "custom/vpnstatus": {
-        "format": "{}",
-        "return-type": "json",
-        "exec": "~/.config/waybar/scripts/check_vpn.sh",
-        "on-click": "~/.config/waybar/scripts/toggle_vpn.sh"
     },
     "custom/wakatime": {
         "format": "{}{}",

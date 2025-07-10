@@ -1,105 +1,138 @@
 @import url('../mainColors/style.css');
 
+/* Base Styles */
 * {
-    font-size:15px;
-    font-family: 'Jetbrains Mono Nerd';
+    font-size: 15px;
+    font-family: 'JetBrains Mono Nerd';
+    border: none;
 }
-window#waybar{
-    all:unset;
+
+window#waybar {
+    all: unset;
+    background: transparent;
 }
-.modules-left {
-    padding:7px;
-    margin:10 0 5 10;
-    border-radius:10px;
-    background: alpha(@background,.9);
-    box-shadow: 0px 0px 2px rgba(0, 0, 0, .6);
+
+/* Module Containers */
+.modules-left,
+.modules-center{
+    padding: 7px;
+    margin: 10px 0 5px 10px;
+    border-radius: 10px;
+    background: alpha(@background, 0.9);
 }
 
 .modules-center {
-    padding:7px;
-    margin:10 0 5 0;
-    border-radius:10px;
-    background: alpha(@background,.9);
-    box-shadow: 0px 0px 2px rgba(0, 0, 0, .6);
+    margin: 10px 0 5px 0;
 }
 
 .modules-right {
-    margin: 10 10 5 0;
-    border-radius:10px;
+    margin: 10px 10px 5px 0;
 }
+
+/* Workspaces */
+#workspaces {
+    padding: 0 5px;
+}
+
+#workspaces button {
+    all: unset;
+    padding: 0 5px;
+    color: alpha(@color9, 0.4);
+    transition: color 0.2s ease;
+}
+
+#workspaces button:hover {
+    color: @color9;
+    text-shadow: 0px 0px 1.5px rgba(0, 0, 0, 0.5);
+}
+
+#workspaces button.active {
+    color: @color9;
+    text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* System Indicators */
 #memory {
     border-radius: 10px 0 0 10px;
 }
+
 #backlight {
     border-radius: 0 10px 10px 0;
 }
 
+#tray {
+    border-radius: 10px 0 0 10px;
+    margin-left: 10px;
+}
 
-#bluetooth:hover,#network:hover,#battery:hover, #cpu:hover,#backlight:hover,#memory:hover,#temperature:hover, #pulseaudio:hover, #pulseaudio#microphone:hover{
-    transition: all .3s ease;
-    color:@color9;
-}
-#clock{
+#custom-notification {
     padding-right: 10px;
-    color:@color7;
-    transition: all .3s ease;
+    border-radius: 0 10px 10px 0;
+    background: alpha(@background, 0.9);
 }
-#workspaces {
-    padding: 0px 5px;
+
+/* Common Module Styles */
+#clock,
+#bluetooth,
+#network,
+#cpu,
+#memory,
+#temperature,
+#backlight,
+#battery,
+#pulseaudio,
+#pulseaudio.microphone,
+#tray,
+#custom-wakatime {
+    color: @color7;
+    background: alpha(@background, 0.9);
+    padding: 0 7px;
+    transition: all 0.3s ease;
 }
-#workspaces button {
-    all:unset;
-    padding: 0px 5px;
-    color: alpha(@color9,.4);
-    transition: all .2s ease;
-}
-#workspaces button:hover {
-    color:rgba(0,0,0,0);
-    border: none;
-    text-shadow: 0px 0px 1.5px rgba(0, 0, 0, .5);
-    transition: all 1s ease;
-}
-#workspaces button.active {
+
+/* Hover Effects */
+#bluetooth:hover,
+#network:hover,
+#battery:hover,
+#cpu:hover,
+#backlight:hover,
+#memory:hover,
+#temperature:hover,
+#pulseaudio:hover,
+#pulseaudio.microphone:hover {
     color: @color9;
-    border: none;
-    text-shadow: 0px 0px 2px rgba(0, 0, 0, .5);
 }
-#bluetooth{
-    transition: all .3s ease;
-    color:@color7;
-}
-#network{
-    transition: all .3s ease;
-    color:@color7;
-}
+
+/* Battery States */
 #battery.charging {
     color: #26A65B;
 }
+
 #battery.warning:not(.charging) {
     color: #ffbe61;
 }
+
 #battery.critical:not(.charging) {
     color: #f53c3c;
-    animation-name: blink;
-    animation-duration: 0.5s;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-}
-#custom-wakatime, #cpu,#memory,#temperature, #backlight, #battery, #pulseaudio, #pulseaudio#microphone, #tray{
-    border: unset;
-    padding: 0px 7px;
-    transition: all .3s ease; 
-    color:@color7;
-    background: alpha(@background,.9);
-    box-shadow: 0px 0px 2px rgba(0, 0, 0, .6);
+    animation: blink 0.5s linear infinite alternate;
 }
 
-#tray{ 
-    margin-left: 10px;
-    border-radius: 10px;
+/* Clock */
+#clock {
+    padding-right: 10px;
+    color: @color7;
 }
+
+/* Tray Menu */
+
 #tray menu * {
-    padding: 0px 7px;
-    transition: all .5s ease; 
+    padding: 0 7px;
+    transition: all 0.3s ease;
+}
+
+/* Animation */
+@keyframes blink {
+    to {
+        opacity: 0.7;
+    }
 }
