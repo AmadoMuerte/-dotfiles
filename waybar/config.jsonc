@@ -25,18 +25,18 @@
         "tray",
         "custom/notification"
     ],
-    "custom/notification": {
+   "custom/notification": {
         "tooltip": true,
         "format": "{icon}",
         "format-icons": {
-        "notification": "<span foreground='red'><sup></sup></span>",
-        "none": "",
-        "dnd-notification": "<span foreground='red'><sup></sup></span>",
-        "dnd-none": "",
-        "inhibited-notification": "<span foreground='red'><sup></sup></span>",
-        "inhibited-none": "",
-        "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
-        "dnd-inhibited-none": ""
+            "notification": "🔔 <span foreground='#ff5555'><sup>●</sup></span>",  
+            "none": "🔔", 
+            "dnd-notification": "🔕 <span foreground='#ff5555'><sup>!</sup></span>",  
+            "dnd-none": "🔕", 
+            "inhibited-notification": "🔔 <span foreground='#aaaaaa'><sup>●</sup></span>",  
+            "inhibited-none": "🔔",  
+            "dnd-inhibited-notification": "🔕 <span foreground='#aaaaaa'><sup>!</sup></span>", 
+            "dnd-inhibited-none": "🔕"  
         },
         "return-type": "json",
         "exec-if": "which swaync-client",
@@ -60,15 +60,15 @@
         "format": "{}"
     },
     "memory": {
-        "format": "🖥 {used} MB",
-        "on-click": "alacritty -e btop"
+    "format": "🖥️ {used} GB",  
+    "on-click": "alacritty -e btop"
     },
     "cpu": {
-        "format": "🎟 {usage}%",
+        "format": "⚡ {usage}%",  
         "on-click": "alacritty -e btop"
     },
     "temperature": {
-        "format": "🌡 {temperatureC}°C",
+        "format": "🔥 {temperatureC}°C",
         "on-click": "alacritty -e btop"
     },
     "tray": {
@@ -93,9 +93,9 @@
         "device": "intel_backlight",
         "format": "{icon}  {percent}%",
         "format-icons": [
-            "󰃞",
-            "󰃟",
-            "󰃠"
+            "🔅",
+            "🔆",
+            "☀️" 
         ],
         "on-scroll-up": "brightnessctl set 1%+",
         "on-scroll-down": "brightnessctl set 1%-",
@@ -108,42 +108,37 @@
             "critical": 20
         },
         "format": "{icon} {capacity}%",
-        "format-charging": " {capacity}%",
-        "format-plugged": " {capacity}%",
+        "format-charging": "⚡ {capacity}%",  
+        "format-plugged": "🔌 {capacity}%",  
         "format-alt": "{time} {icon}",
         "format-icons": [
-            "󰂎",
-            "󰁺",
-            "󰁻",
-            "󰁼",
-            "󰁽",
-            "󰁾",
-            "󰁿",
-            "󰂀",
-            "󰂁",
-            "󰂂",
-            "󰁹"
+            "🪫",
+            "🔋",  
+            "🔋", 
+            "🔋",  
+            "🔋", 
+            "🔋"
         ]
     },
     "pulseaudio": {
-        "format": "{icon}   {volume}%",
+        "format": "{icon}  {volume}%",
         "tooltip": false,
-        "format-muted": " Muted",
+        "format-muted": "🔇 Muted",  
         "on-click": "pamixer -t",
         "on-scroll-up": "pamixer -i 5",
         "on-scroll-down": "pamixer -d 5",
         "scroll-step": 5,
         "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
+            "headphone": "🎧",     
+            "hands-free": "🫳",     
+            "headset": "🎧",      
+            "phone": "📱",      
+            "portable": "🔈",      
+            "car": "🚗",           
             "default": [
-                "",
-                "",
-                ""
+                "🔈",             
+                "🔉",              
+                "🔊"             
             ]
         },
         "on-click": "pavucontrol"
