@@ -7,8 +7,7 @@
     "gtk-layer-shell": true,
     "height": 30,
     "modules-left": [
-        "clock",
-	    "clock#Moscow",
+	"clock#Moscow",
         "custom/wakatime"
     ],
     "modules-center": [
@@ -154,6 +153,7 @@
         "on-click": "pavucontrol"
     },
     "network": {
+	"on-click": "iwgtk",
         "interface": "wlp2*",
         "format-wifi": "   {signalStrength}%",
         "format-ethernet": "{ipaddr}/{cidr} ",
