@@ -5,179 +5,128 @@
     "exclusive": true,
     "passthrough": false,
     "gtk-layer-shell": true,
-    "height": 30,
+    "height": 48,
     "modules-left": [
-	"clock#Moscow",
+        "clock#Moscow",
         "custom/wakatime"
     ],
     "modules-center": [
-    "hyprland/workspaces",
+        "hyprland/workspaces"
     ],
     "modules-right": [
-        "temperature",
         "memory",
         "cpu",
-        "battery",
+        "custom/temperature",
+        "disk",
         "pulseaudio",
-        "pulseaudio#microphone",
-        "backlight",
         "tray",
+        "hyprland/language",
         "custom/notification"
     ],
-   "custom/notification": {
-        "tooltip": true,
+    "hyprland/language": {
+      "format": "{}",
+      "format-ru": "🇷🇺",
+      "format-en": "🇺🇸"
+    },
+    "custom/notification": {
+      "tooltip": true,
+      "format": "{icon}",
+      "format-icons": {
+        "notification": "<span foreground='red'><sup></sup></span>",
+        "none": "",
+        "dnd-notification": "<span foreground='red'><sup></sup></span>",
+        "dnd-none": "",
+        "inhibited-notification": "<span foreground='red'><sup></sup></span>",
+        "inhibited-none": "",
+        "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span>",
+        "dnd-inhibited-none": ""
+      },
+      "return-type": "json",
+      "exec-if": "which swaync-client",
+      "exec": "swaync-client -swb",
+      "on-click": "sleep 0.1 && swaync-client -t -sw",
+      "on-click-right": "swaync-client -d -sw",
+      "escape": true
+    },
+    "hyprland/workspaces": {
         "format": "{icon}",
         "format-icons": {
-            "notification": "🔔 <span foreground='#ff5555'><sup>●</sup></span>",  
-            "none": "🔔", 
-            "dnd-notification": "🔕 <span foreground='#ff5555'><sup>!</sup></span>",  
-            "dnd-none": "🔕", 
-            "inhibited-notification": "🔔 <span foreground='#aaaaaa'><sup>●</sup></span>",  
-            "inhibited-none": "🔔",  
-            "dnd-inhibited-notification": "🔕 <span foreground='#aaaaaa'><sup>!</sup></span>", 
-            "dnd-inhibited-none": "🔕"  
+            "active": "",
+            "default": "",
+            "empty": ""
         },
-        "return-type": "json",
-        "exec-if": "which swaync-client",
-        "exec": "swaync-client -swb",
-        "on-click": "swaync-client -t -sw",
-        "on-click-right": "swaync-client -d -sw",
-        "escape": true
-    },
-     "hyprland/workspaces": {
-            "format": "{icon}",
-            "format-icons": {
-                "active": "",
-                "default": "",
-                "empty": ""
-            },
-            "persistent-workspaces": {
-                "*": [ 1,2,3,4,5, 6, 7 ]
-            }
-        },
-    "hyprland/window": {
-        "format": "{}"
+        "persistent-workspaces": {
+            "*": [1, 2, 3, 4, 5, 6, 7]
+        }
     },
     "memory": {
-    "format": "🖥️ {used} GB",  
-    "on-click": "alacritty -e btop"
+      "format": "    {}%",
+      "on-click": "tilix -e btop",
+      "interval": 1
     },
     "cpu": {
-        "format": "⚡ {usage}%",  
-        "on-click": "alacritty -e btop"
+      "format": "   {usage}%",
+      "on-click": "tilix -e btop",
+      "interval": 1
     },
-    "temperature": {
-        "format": "🔥 {temperatureC}°C",
-        "on-click": "alacritty -e btop"
+    "custom/temperature": {
+        "format": " {}°C",
+        "interval": 1,
+        "exec": "~/.config/waybar/scripts/temperature.sh",
+        "return-type": "json",
+        "tooltip": true,
+        "on-click": "tilix -e watch -n 1 sensors"
+    },
+    "disk": {
+      "interval": 5,
+      "format": "  {percentage_used}%"
     },
     "tray": {
-        "icon-size": 17,
+        "icon-size": 15,
         "spacing": 10
     },
-    "clock": {
+    "clock#Moscow": {
         "interval": 60,
-        "format": "KHV {:%H:%M}",
-        "timezones": [
-            "Asia/Vladivostok"
-        ],
+        "format": "MSK {:%H:%M}",
+        "timezone": "Europe/Moscow",
         "tooltip-format": "<big>{:%d-%m-%Y %H:%M:%S}</big>"
     },
-    "clock#Moscow": {
-    	"interval": 60,
-    	"format": "MSK {:%H:%M}",
-    	"timezone": "Europe/Moscow",
-    	"tooltip-format": "<big>{:%d-%m-%Y %H:%M:%S}</big>"
-    },
-    "backlight": {
-        "device": "intel_backlight",
-        "format": "{icon}  {percent}%",
-        "format-icons": [
-            "🔅",
-            "🔆",
-            "☀️" 
-        ],
-        "on-scroll-up": "brightnessctl set 1%+",
-        "on-scroll-down": "brightnessctl set 1%-",
-        "min-length": 6
-    },
-    "battery": {
-        "states": {
-            "good": 95,
-            "warning": 30,
-            "critical": 20
-        },
-        "format": "{icon} {capacity}%",
-        "format-charging": "⚡ {capacity}%",  
-        "format-plugged": "🔌 {capacity}%",  
-        "format-alt": "{time} {icon}",
-        "format-icons": [
-            "🪫",
-            "🔋",  
-            "🔋", 
-            "🔋",  
-            "🔋", 
-            "🔋"
-        ]
-    },
+    // "battery": {
+    //     "states": {
+    //         "good": 95,
+    //         "warning": 30,
+    //         "critical": 20
+    //     },
+    //     "format": "{icon} {capacity}%",
+    //     "format-charging": "⚡ {capacity}%",  
+    //     "format-plugged": "🔌 {capacity}%",  
+    //     "format-alt": "{time} {icon}",
+    //     "format-icons": [
+    //         "🪫",
+    //         "🔋",  
+    //         "🔋", 
+    //         "🔋",  
+    //         "🔋", 
+    //         "🔋"
+    //     ]
+    // },
     "pulseaudio": {
-        "format": "{icon}  {volume}%",
-        "tooltip": false,
-        "format-muted": "🔇 Muted",  
-        "on-click": "pamixer -t",
-        "on-scroll-up": "pamixer -i 5",
-        "on-scroll-down": "pamixer -d 5",
-        "scroll-step": 5,
-        "format-icons": {
-            "headphone": "🎧",     
-            "hands-free": "🫳",     
-            "headset": "🎧",      
-            "phone": "📱",      
-            "portable": "🔈",      
-            "car": "🚗",           
-            "default": [
-                "🔈",             
-                "🔉",              
-                "🔊"             
-            ]
-        },
-        "on-click": "pavucontrol"
-    },
-    "pulseaudio#microphone": {
-        "format": "{format_source}",
-        "format-source": "\uD83C\uDF99\uFE0F {volume}%",
-        "format-source-muted": "\uD83C\uDF99\uFE0F Muted",
-        "on-click": "pamixer --default-source -t",
-        "on-scroll-up": "pamixer --default-source -i 5",
-        "on-scroll-down": "pamixer --default-source -d 5",
-        "scroll-step": 5,
-        "on-click": "pavucontrol"
-    },
-    "network": {
-	"on-click": "iwgtk",
-        "interface": "wlp2*",
-        "format-wifi": "   {signalStrength}%",
-        "format-ethernet": "{ipaddr}/{cidr} ",
-        "tooltip-format": "{essid} - {ifname} via {gwaddr} ",
-        "format-linked": "{ifname} (No IP) ",
-        "format-disconnected": "Disconnected ⚠",
-        "format-alt": "{ifname}:{essid} {ipaddr}/{cidr}"
-    },
-    "bluetooth": {
-        "format": "  {status}",
-        "format-connected": " {device_alias}",
-        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
-        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
-        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
-        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
-        "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%",
-        "on-click": "overskride"
+      "format": "{icon} <b>{volume}%</b>",
+      "format-muted": "󰝟",
+      "format-bluetooth": "{icon}  <b>{volume}%</b>",
+      "format-bluetooth-muted": "󰝟 ",
+      "format-icons": {
+        "headset": "",
+        "default": ["󰕿", "󰖀", "󰕾"]
+      },
+      "tooltip": true,
+      "on-click": "easyeffects"
     },
     "custom/wakatime": {
-        "format": "{}{}",
+        "format": "{}",
         "return-type": "json",
-        // create a file ~/.config/waybar/wakatime.cfg and put your wakatime api key
-        "exec": "bash -c 'echo $(<~/.config/waybar/wakatime.cfg) | xargs -I {} ~/.config/waybar/waybar-code-stats en {}'",
+        "exec": "bash -c 'if [ -f ~/.config/waybar/wakatime.cfg ]; then echo $(<~/.config/waybar/wakatime.cfg) | xargs -I {} ~/.config/waybar/waybar-code-stats en {}; else echo \"No API key\"; fi'",
         "interval": 1200,
         "on-click": "firefox https://wakatime.com/dashboard"
-    },
+    }
 }
