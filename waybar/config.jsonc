@@ -120,7 +120,7 @@
         "default": ["󰕿", "󰖀", "󰕾"]
       },
       "tooltip": true,
-      "on-click": "easyeffects"
+      "on-click": "pavucontrol",
     },
     "custom/wakatime": {
         "format": "{}",
