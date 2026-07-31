@@ -4,9 +4,8 @@
 
 !/hypr/
 !/waybar/
-!/wofi/
-!/alacritty/
-!/mainColors/
+!/fuzzel/
+!/ghostty/
 
 /hypr/monitors.conf
 /hypr/workspaces.conf
