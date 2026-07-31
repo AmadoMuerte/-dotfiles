@@ -6,6 +6,7 @@
 !/waybar/
 !/fuzzel/
 !/ghostty/
+!/fastfetch/
 
 /hypr/monitors.conf
 /hypr/workspaces.conf
