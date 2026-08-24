@@ -37,6 +37,9 @@ export const theme = {
     closeControlBorder: "#F0808030",
     maximizeControlBorder: "#00BFFF30",
     minimizeControlBorder: "#F8FF7530",
+    closeControlIcon: "#fec3c3",
+    maximizeControlIcon: "#c3effe",
+    minimizeControlIcon: "#f7fec3",
   },
   effects: {
     blurRadius: 4,

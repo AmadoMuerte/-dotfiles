@@ -516,6 +516,7 @@ const CloseButton = ({ window }: { window: WaylandWindow }) => {
         style={{
           width: 16,
           height: 16,
+          color: theme.colors.closeControlIcon,
           position: "absolute",
           zIndex: 1,
           pointerEvents: "none",
@@ -567,6 +568,7 @@ const MaximizeButton = ({ window }: { window: WaylandWindow }) => {
         style={{
           width: 16,
           height: 16,
+          color: theme.colors.maximizeControlIcon,
           position: "absolute",
           zIndex: 1,
           pointerEvents: "none",
@@ -618,6 +620,7 @@ const MinimizeButton = ({ window }: { window: WaylandWindow }) => {
         style={{
           width: 16,
           height: 16,
+          color: theme.colors.minimizeControlIcon,
           position: "absolute",
           zIndex: 1,
           pointerEvents: "none",
