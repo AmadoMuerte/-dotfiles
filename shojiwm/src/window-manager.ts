@@ -37,6 +37,14 @@ import {
   type TileRect,
   type TileResizeHandle,
 } from "./tiling/tree";
+import {
+  findOutputInDirection,
+  findNearestRect,
+  findRectInDirection,
+  moveRectBetweenAreas,
+  projectRectToOutputEdge,
+  type Rect,
+} from "./multimonitor/geometry";
 
 export type WindowDirection = "left" | "right" | "up" | "down";
 
@@ -363,6 +371,7 @@ export class HybridWindowManager {
   // Tracks MRU focus time per window id so the dock can pick "the most recent
   // window of an app" deterministically. Updated by recordFocus().
   private readonly lastFocusedAt = new Map<string, number>();
+  private readonly lastFocusedWindowByWorkspace = new Map<string, string>();
   private focusedWindowId: string | null = null;
   private readonly pendingInitialFocusByWindowId = new Map<string, number>();
   private readonly tileabilityByWindowId = new Map<string, boolean>();
@@ -742,6 +751,7 @@ export class HybridWindowManager {
       })),
     });
     this.currentMonitor = snapshot.currentMonitor;
+    this.lastFocusedWindowByWorkspace.clear();
     this.activeWorkspaceByMonitor.clear();
     for (const [monitor, index] of snapshot.activeWorkspaceByMonitor) {
       this.activeWorkspaceByMonitor.set(monitor, index);
@@ -793,6 +803,7 @@ export class HybridWindowManager {
       this.isGrabbing = false;
     }
     if (this.focusedWindowId === window.id) this.focusedWindowId = null;
+    this.removeWindowFromFocusHistory(window.id);
 
     for (const workspace of this.workspaces.values()) {
       const nextFocus = workspace.removeWindow(window);
@@ -807,6 +818,8 @@ export class HybridWindowManager {
 
   public onClose(window: WaylandWindow) {
     if (this.focusedWindowId === window.id) this.focusedWindowId = null;
+    this.removeWindowFromFocusHistory(window.id);
+    this.lastFocusedAt.delete(window.id);
     this.restoredDuringInitialConfigure.delete(window.id);
     this.deferredInitialLayoutWindowIds.delete(window.id);
     this.pendingInitialFocusByWindowId.delete(window.id);
@@ -833,6 +846,13 @@ export class HybridWindowManager {
     const workspace = this.findWorkspaceForWindow(window);
     if (focused) {
       this.focusedWindowId = window.id;
+      if (workspace) {
+        this.currentMonitor = workspace.monitor;
+        this.lastFocusedWindowByWorkspace.set(
+          workspaceKey(workspace.monitor, workspace.index),
+          window.id,
+        );
+      }
       this.windowStack.raise(window);
       if (this.shouldDeferFocusLayoutForInitialOpen(window, workspace)) {
         this.applyWorkspaceStackPolicy(workspace);
@@ -1300,12 +1320,54 @@ export class HybridWindowManager {
   }
 
   public focusDirection(direction: WindowDirection) {
-    const workspace = this.getCurrentWorkspace();
+    const focused = this.focusedWorkspaceWindow();
+    const workspace = focused?.workspace ?? this.getCurrentWorkspace();
     if (!workspace) {
       return;
     }
-    workspace.focusDirection(direction);
-    this.applyWorkspaceStackPolicy(workspace);
+    if (workspace.focusDirection(direction)) {
+      this.currentMonitor = workspace.monitor;
+      this.applyWorkspaceStackPolicy(workspace);
+      return;
+    }
+
+    const targetOutput = findOutputInDirection(
+      this.outputRects(),
+      workspace.monitor,
+      direction,
+    );
+    if (!targetOutput) return;
+    const targetWorkspace = this.workspaceForMonitor(targetOutput.name);
+    if (!targetWorkspace) return;
+
+    const focusedRect = focused
+      ? numericRect(focused.window.state[WINDOW_STATE_RECT]())
+      : this.outputRect(workspace.monitor);
+    const sourceOutput = this.outputRect(workspace.monitor);
+    const originRect = focusedRect && sourceOutput
+      ? projectRectToOutputEdge(
+          focusedRect,
+          sourceOutput,
+          targetOutput,
+          direction,
+        )
+      : focusedRect;
+    const candidate = originRect
+      ? targetWorkspace.nearestTile(originRect)
+      : undefined;
+    const fallbackId = this.lastFocusedWindowByWorkspace.get(
+      workspaceKey(targetWorkspace.monitor, targetWorkspace.index),
+    );
+    const next =
+      candidate ??
+      (fallbackId ? targetWorkspace.visibleWindowById(fallbackId) : undefined) ??
+      targetWorkspace.commandWindow();
+    if (next) {
+      this.currentMonitor = targetOutput.name;
+      targetWorkspace.focusWindow(next);
+      next.focus();
+    }
+    this.applyWorkspaceStackPolicy(targetWorkspace);
   }
 
   public moveFocusedWindow(direction: WindowDirection) {
@@ -1324,6 +1386,73 @@ export class HybridWindowManager {
         );
       }
       this.applyWorkspaceStackPolicy(focused.workspace);
+    });
+  }
+
+  public moveFocusedWindowToOutput(direction: WindowDirection) {
+    withManagedWindowOnlySSDRebuildSuppressed(() => {
+      this.syncWorkspaces();
+      const focused = this.focusedWorkspaceWindow();
+      if (!focused || this.isGrabbing) return;
+      const { workspace: fromWorkspace, window } = focused;
+      const targetOutput = findOutputInDirection(
+        this.outputRects(),
+        fromWorkspace.monitor,
+        direction,
+      );
+      if (!targetOutput) return;
+      const targetWorkspace = this.workspaceForMonitor(targetOutput.name);
+      if (!targetWorkspace || targetWorkspace === fromWorkspace) return;
+      if (targetWorkspace.hasWindow(window)) return;
+
+      const sourceArea = fromWorkspace.usableRect();
+      const targetArea = targetWorkspace.usableRect();
+      const wasFloating = !fromWorkspace.shouldTile(window);
+      const moved = fromWorkspace.takeWindowForMove(window);
+      if (!moved) return;
+      if (wasFloating) {
+        const floatingRect = moveRectBetweenAreas(
+          numericRect(
+            moved.snapshot.floatingRect ??
+              window.state[WINDOW_STATE_RECT](),
+          ),
+          sourceArea,
+          targetArea,
+        );
+        moved.snapshot.floatingRect = floatingRect;
+        if (moved.snapshot.restoreRect) {
+          moved.snapshot.restoreRect = moveRectBetweenAreas(
+            numericRect(moved.snapshot.restoreRect),
+            sourceArea,
+            targetArea,
+          );
+        }
+        if (moved.snapshot.fullscreenRestoreRect) {
+          moved.snapshot.fullscreenRestoreRect = moveRectBetweenAreas(
+            numericRect(moved.snapshot.fullscreenRestoreRect),
+            sourceArea,
+            targetArea,
+          );
+        }
+      }
+      moved.snapshot.snapZone = null;
+      moved.snapshot.snapMonitor = null;
+
+      targetWorkspace.addMovedWindow(window, moved.snapshot);
+      this.currentMonitor = targetOutput.name;
+      this.removeWindowFromFocusHistory(window.id);
+      this.lastFocusedWindowByWorkspace.set(
+        workspaceKey(targetWorkspace.monitor, targetWorkspace.index),
+        window.id,
+      );
+      fromWorkspace.applyLayout();
+      targetWorkspace.applyLayout();
+      targetWorkspace.focusWindow(window);
+      window.focus();
+      this.applyWorkspaceStackPolicy(fromWorkspace);
+      this.applyWorkspaceStackPolicy(targetWorkspace);
+      this.syncWorkspaceVisibility();
+      this.workspaceChangeBroadcaster?.();
     });
   }
 
@@ -1832,6 +1961,32 @@ export class HybridWindowManager {
     return candidates
       .map((workspace) => ({ workspace, window: workspace.commandWindow() }))
       .find((entry): entry is { workspace: Workspace; window: WaylandWindow } => entry.window !== undefined);
+  }
+
+  private removeWindowFromFocusHistory(windowId: string): void {
+    for (const [key, id] of this.lastFocusedWindowByWorkspace) {
+      if (id === windowId) this.lastFocusedWindowByWorkspace.delete(key);
+    }
+  }
+
+  private outputRects(): Array<Rect & { name: string }> {
+    return COMPOSITOR.output.outputs.flatMap((output) =>
+      output.resolution
+        ? [
+            {
+              name: output.name,
+              x: output.position.x,
+              y: output.position.y,
+              width: output.resolution.width / output.scale,
+              height: output.resolution.height / output.scale,
+            },
+          ]
+        : [],
+    );
+  }
+
+  private outputRect(monitor: string): Rect | undefined {
+    return this.outputRects().find((output) => output.name === monitor);
   }
 
   private gestureMonitor(event: GestureSwipeEvent): string {
@@ -3544,17 +3699,23 @@ export class Workspace {
     }
   }
 
-  public focusDirection(direction: WindowDirection) {
+  public focusDirection(direction: WindowDirection): boolean {
     const focused = this.focusedWindow();
     if (!focused) {
-      this.focusActiveWindow();
-      return;
+      const active = this.activeWindow();
+      if (!active) return false;
+      active.focus();
+      return true;
     }
     const focusedRect = focused.state[WINDOW_STATE_RECT]();
     const focusedX = read(focusedRect.x) + read(focusedRect.width) / 2;
     const focusedY = read(focusedRect.y) + read(focusedRect.height) / 2;
     const candidates = this.windows
-      .filter((window) => window.id !== focused.id && !window.state[WINDOW_STATE_MINIMIZED]())
+      .filter(
+        (window) =>
+          window.id !== focused.id &&
+          !window.state[WINDOW_STATE_MINIMIZED](),
+      )
       .map((window) => {
         const rect = window.state[WINDOW_STATE_RECT]();
         const x = read(rect.x) + read(rect.width) / 2;
@@ -3576,13 +3737,44 @@ export class Workspace {
       });
     const next = candidates[0]?.window;
     if (!next) {
-      return;
+      return false;
     }
     this.activeWindowId = next.id;
     if (this.shouldTile(next)) {
       this.applyLayout();
     }
     next.focus();
+    return true;
+  }
+
+  public nearestTile(origin: Rect): WaylandWindow | undefined {
+    const candidates = this.tileableWindows().map((window) => ({
+      window,
+      ...numericRect(window.state[WINDOW_STATE_RECT]()),
+    }));
+    return findNearestRect(candidates, origin)?.window;
+  }
+
+  public visibleWindowById(windowId: string): WaylandWindow | undefined {
+    return this.windows.find(
+      (window) =>
+        window.id === windowId && this.isTileable(window),
+    );
+  }
+
+  public usableRect(): Rect {
+    const output = COMPOSITOR.output.current[this.monitor];
+    const usable = COMPOSITOR.layer.usableArea(this.monitor);
+    if (usable) return usable;
+    if (output?.resolution) {
+      return {
+        x: output.position.x,
+        y: output.position.y,
+        width: output.resolution.width / output.scale,
+        height: output.resolution.height / output.scale,
+      };
+    }
+    return { x: 0, y: 0, width: 1280, height: 720 };
   }
 
   public swapFocusedTile(direction: WindowDirection): boolean {

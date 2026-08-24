@@ -27,6 +27,9 @@ export function configureKeybinds(manager: HybridWindowManager): void {
   ] as const) {
     COMPOSITOR.key.bind(`focus-${direction}`, `Super+${key}`, () => manager.focusDirection(direction));
     COMPOSITOR.key.bind(`move-${direction}`, `Super+Ctrl+${key}`, () => manager.moveFocusedWindow(direction));
+    COMPOSITOR.key.bind(`move-output-${direction}`, `Super+Shift+Ctrl+${key}`, () =>
+      manager.moveFocusedWindowToOutput(direction),
+    );
   }
 
   const resizeStep = theme.metrics.splitResizeStep;
