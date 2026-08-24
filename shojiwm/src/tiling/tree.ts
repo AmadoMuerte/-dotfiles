@@ -7,6 +7,7 @@ export interface TileRect {
 
 export type SplitDirection = "horizontal" | "vertical";
 export type TileEdge = "left" | "right" | "up" | "down";
+export type TileDropZone = "left" | "right" | "top" | "bottom" | "center";
 
 export type TileNode =
   | { type: "leaf"; windowId: string }
@@ -234,6 +235,37 @@ export class TileTree {
     };
     if (this.root) swap(this.root);
     return true;
+  }
+
+  public drop(windowId: string, targetId: string, zone: TileDropZone): boolean {
+    if (windowId === targetId || !this.has(windowId) || !this.has(targetId)) return false;
+    if (zone === "center") return this.swap(windowId, targetId);
+    this.root = this.removeLeaf(this.root, windowId);
+    if (!this.root) return false;
+    const direction: SplitDirection = zone === "left" || zone === "right" ? "vertical" : "horizontal";
+    const dragged: TileNode = { type: "leaf", windowId };
+    this.root = this.replaceLeaf(this.root, targetId, (target) => ({
+      type: "split",
+      direction,
+      ratio: 0.5,
+      first: zone === "left" || zone === "top" ? dragged : target,
+      second: zone === "left" || zone === "top" ? target : dragged,
+    }));
+    return true;
+  }
+
+  public previewDrop(
+    windowId: string,
+    targetId: string,
+    zone: TileDropZone,
+    area: TileRect,
+    gap = 8,
+  ): TileRect | null {
+    const preview = new TileTree();
+    preview.restore(this.snapshot());
+    return preview.drop(windowId, targetId, zone)
+      ? preview.rects(area, gap).get(windowId) ?? null
+      : null;
   }
 
   private lastLeafId(node: TileNode): string {

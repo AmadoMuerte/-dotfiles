@@ -33,6 +33,7 @@ import { PRIMARY_MONITOR } from "./monitors";
 import { theme } from "./theme";
 import {
   TileTree,
+  type TileDropZone,
   type TileNode,
   type TileRect,
   type TileResizeHandle,
@@ -162,6 +163,7 @@ const WORKSPACE_GESTURE_THRESHOLD_RATIO = 0.22;
 const WORKSPACE_GESTURE_VELOCITY_THRESHOLD = 900;
 const TILE_DRAG_WORKSPACE_EDGE_PX = 80;
 const TILE_DRAG_WORKSPACE_SWITCH_INTERVAL_MS = 420;
+const TILE_DRAG_TARGET_INSET_PX = 12;
 export const TILE_GAP = theme.metrics.innerGap;
 const MANAGED_WINDOW_ONLY_REBUILD_SUPPRESSION = {
   allowManagedWindowOnly: true,
@@ -174,6 +176,48 @@ const STRICT_MANAGED_WINDOW_ONLY_REBUILD_SUPPRESSION = {
 const MANAGED_WINDOW_ONLY_ANIMATION = {
   suppressSSDRebuild: true,
 } as const;
+
+export function tileDragTargetAtPointer(
+  targets: ReadonlyMap<string, { rect: TileRect; index: number }>,
+  pointerX: number,
+  pointerY: number,
+): { windowId: string; index: number } | null {
+  for (const [windowId, { rect, index }] of targets) {
+    const insetX = Math.min(TILE_DRAG_TARGET_INSET_PX, rect.width / 4);
+    const insetY = Math.min(TILE_DRAG_TARGET_INSET_PX, rect.height / 4);
+    if (
+      pointerX >= rect.x + insetX &&
+      pointerX <= rect.x + rect.width - insetX &&
+      pointerY >= rect.y + insetY &&
+      pointerY <= rect.y + rect.height - insetY
+    ) {
+      return { windowId, index };
+    }
+  }
+  return null;
+}
+
+export function tileDropZoneAtPointer(
+  rect: TileRect,
+  pointerX: number,
+  pointerY: number,
+): TileDropZone | null {
+  const insetX = Math.min(TILE_DRAG_TARGET_INSET_PX, rect.width / 4);
+  const insetY = Math.min(TILE_DRAG_TARGET_INSET_PX, rect.height / 4);
+  if (
+    pointerX < rect.x + insetX ||
+    pointerX > rect.x + rect.width - insetX ||
+    pointerY < rect.y + insetY ||
+    pointerY > rect.y + rect.height - insetY
+  ) return null;
+  const x = (pointerX - rect.x) / rect.width;
+  const y = (pointerY - rect.y) / rect.height;
+  if (x < 0.3 && y >= 0.3 && y <= 0.7) return "left";
+  if (x > 0.7 && y >= 0.3 && y <= 0.7) return "right";
+  if (y < 0.3) return "top";
+  if (y > 0.7) return "bottom";
+  return "center";
+}
 
 // Windows-style edge snapping for floating drags. Distances are logical px.
 //   - within SNAP_EDGE_PX of an edge triggers that edge's zone
@@ -195,6 +239,8 @@ export interface SnapPreviewPayload {
   monitor: string;
   rect: SnapPreviewRect | null;
   kind: "floating" | "tiling";
+  zone?: TileDropZone;
+  style?: typeof theme.dropIndicator;
 }
 
 export type SnapPreviewBroadcaster = (preview: SnapPreviewPayload) => void;
@@ -1063,8 +1109,9 @@ export class HybridWindowManager {
           );
           this.emitSnapPreview(
             targetWorkspace.monitor,
-            targetWorkspace.draggingSlotRect(),
+            targetWorkspace.tileDragPreviewRect(),
             "tiling",
+            targetWorkspace.tileDragZone() ?? undefined,
           );
           this.applyWorkspaceStackPolicy(targetWorkspace);
           if (event.phase === "end") {
@@ -1165,8 +1212,9 @@ export class HybridWindowManager {
     );
     this.emitSnapPreview(
       targetWorkspace.monitor,
-      targetWorkspace.draggingSlotRect(),
+      targetWorkspace.tileDragPreviewRect(),
       "tiling",
+      targetWorkspace.tileDragZone() ?? undefined,
     );
   }
 
@@ -2705,6 +2753,7 @@ export class HybridWindowManager {
     monitor: string,
     rect: ManagedWindowRect | null,
     kind: "floating" | "tiling",
+    zone?: TileDropZone,
   ) {
     if (!this.snapPreviewBroadcaster) {
       return;
@@ -2719,6 +2768,8 @@ export class HybridWindowManager {
     this.snapPreviewBroadcaster({
       monitor,
       kind,
+      zone,
+      style: kind === "tiling" ? theme.dropIndicator : undefined,
       rect: {
         x: read(rect.x) - ox,
         y: read(rect.y) - oy,
@@ -2874,9 +2925,10 @@ export class Workspace {
   private activeWindowId: string | null = null;
   private visibilityAnimationToken = 0;
   private draggingWindowId: string | null = null;
-  // Layout slot reserved for the tile being dragged (the gap opened in the row).
-  // Captured during applyLayout so the bar can preview where the tile will land.
-  private lastDraggingSlotRect: ManagedWindowRect | null = null;
+  private tileDragTargets = new Map<string, { rect: TileRect; index: number }>();
+  private tileDragTargetWindowId: string | null = null;
+  private tileDragDropZone: TileDropZone | null = null;
+  private tileDragPreview: ManagedWindowRect | null = null;
   private lastAppliedTileViewportRect: ManagedWindowRect | null = null;
   private readonly initialTileStateByWindowId = new Map<
     string,
@@ -3123,6 +3175,10 @@ export class Workspace {
     this.windows.splice(index, 1);
     this.tileTree.remove(window.id);
     this.draggingWindowId = null;
+    this.tileDragTargets.clear();
+    this.tileDragTargetWindowId = null;
+    this.tileDragDropZone = null;
+    this.tileDragPreview = null;
   }
 
   public removeFloatingWindow(window: WaylandWindow) {
@@ -3370,7 +3426,6 @@ export class Workspace {
     const rects = this.tileTree.rects(numericRect(viewportRect), TILE_GAP);
     this.validateLayoutState(rects, viewportRect);
     const appliedRects: Record<string, ManagedWindowRect> = {};
-    this.lastDraggingSlotRect = null;
 
     tileable.forEach((window) => {
       const tiledRect = rects.get(window.id) ?? viewportRect;
@@ -3380,9 +3435,6 @@ export class Workspace {
           ? this.maximizedRootRect(window)
           : tiledRect;
       appliedRects[window.id] = rect;
-      if (window.id === this.draggingWindowId) {
-        this.lastDraggingSlotRect = rect;
-      }
       if (window.id !== this.draggingWindowId) {
         if (animate) {
           playRectAnimation(
@@ -3493,17 +3545,13 @@ export class Workspace {
     }
   }
 
-  /** Layout slot reserved for the tile being dragged, or null when not dragging. */
-  public draggingSlotRect(): ManagedWindowRect | null {
-    return this.draggingWindowId ? this.lastDraggingSlotRect : null;
-  }
-
   public beginTileDrag(window: WaylandWindow, rect: ManagedWindowRect) {
     if (!this.shouldTile(window)) {
       return;
     }
     this.activeWindowId = window.id;
     this.draggingWindowId = window.id;
+    this.resetTileDragTargets(window.id);
     const wasMaximized = window.state[WINDOW_STATE_MAXIMIZED]();
     window.state[WINDOW_STATE_MAXIMIZED].set(false);
     window.state[WINDOW_STATE_RESTORE_RECT].set(null);
@@ -3530,6 +3578,7 @@ export class Workspace {
       this.tileTree.insert(window.id, null, numericRect(this.tileViewportRect()));
     }
     this.draggingWindowId = window.id;
+    this.resetTileDragTargets(window.id);
     window.state[WINDOW_STATE_TILE_DRAGGING].set(true);
     this.syncWindowVisibleOutputs(window);
     window.state[WINDOW_STATE_WORKSPACE_VISIBLE].set(true);
@@ -3565,13 +3614,27 @@ export class Workspace {
       this.beginTileDrag(window, rect);
     }
     this.activeWindowId = window.id;
-    this.moveTileWindowToIndex(
-      window,
-      this.tileInsertionIndexForPointer(window, pointerX, pointerY),
-    );
     stopRectAnimation(window, WINDOW_STATE_RECT);
     window.state[WINDOW_STATE_RECT].set(rect);
-    this.applyLayout();
+    const target = this.tileDragTargetForPointer(pointerX, pointerY);
+    if (!target) {
+      this.tileDragTargetWindowId = null;
+      this.tileDragDropZone = null;
+      this.tileDragPreview = null;
+      return;
+    }
+    const zone = tileDropZoneAtPointer(target.rect, pointerX, pointerY);
+    if (!zone) return;
+    if (target.windowId === this.tileDragTargetWindowId && zone === this.tileDragDropZone) return;
+    this.tileDragTargetWindowId = target.windowId;
+    this.tileDragDropZone = zone;
+    this.tileDragPreview = this.tileTree.previewDrop(
+      window.id,
+      target.windowId,
+      zone,
+      numericRect(this.tileViewportRect()),
+      TILE_GAP,
+    );
   }
 
   public endTileDrag(window: WaylandWindow, cancelled: boolean) {
@@ -3579,6 +3642,14 @@ export class Workspace {
       return;
     }
     this.draggingWindowId = null;
+    if (!cancelled && this.tileDragTargetWindowId && this.tileDragDropZone) {
+      this.tileTree.drop(window.id, this.tileDragTargetWindowId, this.tileDragDropZone);
+      this.syncWindowsToTileTreeOrder();
+    }
+    this.tileDragTargets.clear();
+    this.tileDragTargetWindowId = null;
+    this.tileDragDropZone = null;
+    this.tileDragPreview = null;
     window.state[WINDOW_STATE_TILE_DRAGGING].set(false);
     this.syncWindowVisibleOutputs(window);
     window.state[WINDOW_STATE_WORKSPACE_OFFSET_Y].set(0);
@@ -4098,55 +4169,48 @@ export class Workspace {
     return windows.find((window) => window.id === this.activeWindowId);
   }
 
-  private tileInsertionIndexForPointer(
-    window: WaylandWindow,
-    pointerX: number,
-    pointerY: number,
-  ): number {
-    const tileable = this.tileableWindows();
+  private resetTileDragTargets(draggedWindowId: string): void {
+    const ids = this.tileTree.leafIds();
     const rects = this.tileTree.rects(numericRect(this.tileViewportRect()), TILE_GAP);
-    let nearest: { index: number; distance: number } | null = null;
-    for (let index = 0; index < tileable.length; index += 1) {
-      const candidate = tileable[index];
-      if (candidate.id === window.id) continue;
-      const rect = rects.get(candidate.id);
-      if (!rect) continue;
-      const dx = pointerX - (rect.x + rect.width / 2);
-      const dy = pointerY - (rect.y + rect.height / 2);
-      const distance = dx * dx + dy * dy;
-      if (!nearest || distance < nearest.distance) nearest = { index, distance };
-    }
-    return nearest?.index ?? this.tileTree.leafIds().indexOf(window.id);
+    this.tileDragTargets = new Map(
+      ids.flatMap((windowId, index) => {
+        const rect = rects.get(windowId);
+        const window = this.findWindowById(windowId);
+        return windowId === draggedWindowId || !rect || !window || window.state[WINDOW_STATE_FULLSCREEN]()
+          ? []
+          : [[windowId, { rect, index }] as const];
+      }),
+    );
+    this.tileDragTargetWindowId = null;
+    this.tileDragDropZone = null;
+    this.tileDragPreview = null;
   }
 
-  private moveTileWindowToIndex(window: WaylandWindow, tileIndex: number) {
-    this.tileTree.moveToIndex(window.id, tileIndex);
-    const currentIndex = this.windows.findIndex(
-      (current) => current.id === window.id,
+  private tileDragTargetForPointer(
+    pointerX: number,
+    pointerY: number,
+  ): { windowId: string; index: number; rect: TileRect } | null {
+    const target = tileDragTargetAtPointer(this.tileDragTargets, pointerX, pointerY);
+    if (!target) return null;
+    const rect = this.tileDragTargets.get(target.windowId)?.rect;
+    return rect ? { ...target, rect } : null;
+  }
+
+  public tileDragPreviewRect(): ManagedWindowRect | null {
+    return this.tileDragPreview;
+  }
+
+  public tileDragZone(): TileDropZone | null {
+    return this.tileDragDropZone;
+  }
+
+  private syncWindowsToTileTreeOrder(): void {
+    const order = new Map(this.tileTree.leafIds().map((id, index) => [id, index]));
+    this.windows.sort(
+      (a, b) =>
+        (order.get(a.id) ?? Number.MAX_SAFE_INTEGER) -
+        (order.get(b.id) ?? Number.MAX_SAFE_INTEGER),
     );
-    if (currentIndex < 0) {
-      return;
-    }
-
-    this.windows.splice(currentIndex, 1);
-    const tileableWithoutWindow = this.tileableWindows();
-    const beforeWindow = tileableWithoutWindow[tileIndex];
-
-    if (beforeWindow) {
-      const insertIndex = this.windows.findIndex(
-        (current) => current.id === beforeWindow.id,
-      );
-      this.windows.splice(Math.max(0, insertIndex), 0, window);
-      return;
-    }
-
-    let lastTileableIndex = -1;
-    for (let index = 0; index < this.windows.length; index++) {
-      if (this.shouldTile(this.windows[index])) {
-        lastTileableIndex = index;
-      }
-    }
-    this.windows.splice(lastTileableIndex + 1, 0, window);
   }
 
   public floatingWindows(): WaylandWindow[] {
@@ -4512,7 +4576,7 @@ function scheduleMinimizeAnimation(
       easing: minimized
         ? WINDOW_MINIMIZE_OPACITY_EASING
         : WINDOW_UNMINIMIZE_OPACITY_EASING,
-      mode: "override",
+      mode: "multiply",
     },
   });
 }
@@ -4547,7 +4611,7 @@ function scheduleWorkspaceVisualAnimation(
       to: toOpacity,
       duration,
       easing,
-      mode: "override",
+      mode: "multiply",
     },
   });
 }

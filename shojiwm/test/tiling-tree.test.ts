@@ -59,6 +59,18 @@ for (const id of ["A", "C", "B"]) {
 }
 check(tree.leafIds().length === 0, "closing the final window must leave an empty tree");
 
+for (const zone of ["left", "right", "top", "bottom", "center"] as const) {
+  const drop = new TileTree();
+  drop.restore(nested);
+  const before = drop.dump();
+  const preview = drop.previewDrop("A", "B", zone, area);
+  check(preview, `${zone} must produce prospective geometry`);
+  check(drop.dump() === before, `${zone} preview must not mutate the tree`);
+  check(drop.drop("A", "B", zone), `${zone} drop must apply`);
+  check(drop.validate(new Set(["A", "B", "C"])).length === 0, `${zone} drop must keep the tree valid`);
+  check(JSON.stringify(drop.rects(area).get("A")) === JSON.stringify(preview), `${zone} preview must match applied geometry`);
+}
+
 const stress = new TileTree();
 for (const id of ["1", "2", "3", "4", "5", "6", "7", "8"]) {
   stress.insert(id, id === "1" ? null : String(Number(id) - 1), area);

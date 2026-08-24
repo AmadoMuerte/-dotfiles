@@ -1,13 +1,20 @@
 import { cubicBezier } from "shoji_wm";
 
 export const theme = {
+  dropIndicator: {
+    opacity: 0.22,
+    borderOpacity: 0.72,
+    radius: 8,
+    inset: 6,
+    duration: 100,
+  },
   metrics: {
     innerGap: 8,
     outerGap: 10,
     singleWindowGap: 2,
     tiledRadius: 6,
     floatingRadius: 11,
-    borderWidth: 2,
+    borderWidth: 1,
     titlebarHeight: 30,
     splitResizeStep: 100,
   },
@@ -26,14 +33,14 @@ export const theme = {
   },
   colors: {
     transparent: "#00000000",
-    windowBackground: "#10131900",
-    focusedBorder: { red: 215, green: 186, blue: 125, alpha: 1 },
-    unfocusedBorder: { red: 79, green: 86, blue: 102, alpha: 0.72 },
-    focusedTitlebar: { red: 31, green: 36, blue: 48, alpha: 0.5 },
-    unfocusedTitlebar: { red: 42, green: 47, blue: 58, alpha: 0.5 },
-    focusedTitle: "#f5f7fa",
-    unfocusedTitle: "#c9d1d9",
-    controlBackground: "#FFFFFF20",
+    windowBackground: "#11151B24",
+    focusedBorder: "#71839A80",
+    unfocusedBorder: "#343E4A70",
+    focusedTitlebar: "#171C24E6",
+    unfocusedTitlebar: "#131820D9",
+    focusedTitle: "#E6EAF0",
+    unfocusedTitle: "#9AA5B4",
+    controlBackground: "#FFFFFF14",
     closeControlBorder: "#F0808030",
     maximizeControlBorder: "#00BFFF30",
     minimizeControlBorder: "#F8FF7530",
@@ -42,6 +49,7 @@ export const theme = {
     minimizeControlIcon: "#f7fec3",
   },
   effects: {
+    windowOpacity: 0.98,
     blurRadius: 4,
     blurPasses: 2,
     capturePadding: 24,

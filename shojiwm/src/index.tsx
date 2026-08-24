@@ -3,6 +3,7 @@ import {
   Button,
   ClientWindow,
   Image,
+  WindowBorder,
   COMPOSITOR,
   type WaylandWindow,
   computed,
@@ -244,9 +245,8 @@ function updateDockProximity(monitor: string, inside: boolean) {
   WORKSPACE_IPC.broadcast("dock.proximity", { monitor, inside });
 }
 
-// Snap-zone preview: broadcast the active snap rect (floating edge zones, or the
-// opened tiling slot) to the bar, which renders the rounded preview overlay.
-//   snap.preview  { monitor, rect: {x,y,w,h} | null, kind: "floating"|"tiling" }
+// Keep the IPC preview for external bars; the compositor also renders the
+// tiling indicator directly in the dragged window's composition below.
 let lastSnapJson = "";
 HYBRID_WINDOW_MANAGER.setSnapPreviewBroadcaster((preview) => {
   const json = JSON.stringify(preview);
@@ -285,6 +285,12 @@ const isChromiumFamily = (appId: string): boolean => {
   return (
     id.includes("chrome") || id.includes("chromium") || id.includes("electron")
   );
+};
+
+const isBrowser = (appId: string): boolean => {
+  const id = appId.toLowerCase();
+  return ["zen", "firefox", "chrome", "chromium", "brave", "vivaldi", "opera"]
+    .some((browser) => id.includes(browser));
 };
 
 // GTK3 tooltips (waybar) declare their whole rect opaque despite transparent
@@ -457,6 +463,14 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
   const inactive = computed(
     () => minimizeVisualIdle() || (!workspaceVisible() && !tileDragging()),
   );
+  const opacity = computed(
+    () => workspaceOpacity() * (isBrowser(window.appId() ?? "") ? 1 : theme.effects.windowOpacity),
+  );
+  const borderColor = computed(() =>
+    window.isFocused()
+      ? theme.colors.focusedBorder
+      : theme.colors.unfocusedBorder,
+  );
 
   // Fullscreen: drop all chrome (titlebar, border, rounded corners) and let
   // the client surface fill its managed rect edge to edge. The rect is set to
@@ -490,13 +504,24 @@ COMPOSITOR.window.composition = (window: WaylandWindow) => {
       rect={managedRect}
       zIndex={zIndex}
       visibleOutputs={window.state[WINDOW_STATE_VISIBLE_OUTPUTS]}
-      opacity={workspaceOpacity}
+      opacity={opacity}
       forceRectSize={forceRectSize}
       tiled={tiled}
       idle={inactive}
       interactive={inactive((value) => !value)}
     >
-      <ClientWindow />
+      <WindowBorder
+        style={{
+          background: theme.colors.windowBackground,
+          border: { px: WINDOW_BORDER_PX, color: borderColor },
+          borderRadius: tiled((value) =>
+            value ? theme.metrics.tiledRadius : theme.metrics.floatingRadius,
+          ),
+        }}
+        interaction={{ resizeHitArea: { edgePx: 6, cornerPx: 10 } }}
+      >
+        <ClientWindow />
+      </WindowBorder>
     </ManagedWindow>
   );
 };
