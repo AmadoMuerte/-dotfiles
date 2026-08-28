@@ -10,6 +10,8 @@
 !/fastfetch/
 !/matugen/
 
+!/swaync/
+
 /matugen/templates/*
 !/matugen/templates/hypr-colors.lua
 

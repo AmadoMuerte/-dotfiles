@@ -1,0 +1,51 @@
+{
+    "$schema": "/etc/xdg/swaync/configSchema.json",
+    "position": "top-right",
+    "layer": "overlay",
+    "control-center-layer": "overlay",
+    "control-center-margin-top": 6,
+    "control-center-margin-bottom": 6,
+    "control-center-margin-right": 6,
+    "control-center-margin-left": 6,
+    "control-center-width": 420,
+    "control-center-height": 720,
+    "notification-window-width": 360,
+    "notification-window-height": -1,
+    "notification-2fa-action": true,
+    "notification-inline-replies": true,
+    "notification-action-filter": {
+        "hide-telegram-actions": {
+            "app-name": ".*[Tt]elegram.*",
+            "use-regex": true,
+            "id-matcher": ".*"
+        }
+    },
+    "notification-visibility": {
+        "app-name-blacklist": [],
+        "app-name-whitelist": []
+    },
+    "timeout": 8,
+    "timeout-low": 15,
+    "timeout-critical": 0,
+    "timeout-critical-delay": 300,
+    "fit-to-screen": true,
+    "image-visibility": "when-available",
+    "hide-on-action": false,
+    "hide-on-clear": false,
+    "keyboard-shortcuts": true,
+    "widgets": [
+        "title",
+        "dnd",
+        "notifications"
+    ],
+    "widget-config": {
+        "title": {
+            "text": "Notifications",
+            "clear-all-button": true,
+            "button-text": "Clear"
+        },
+        "dnd": {
+            "text": "Do Not Disturb"
+        }
+    }
+}
