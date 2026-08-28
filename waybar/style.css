@@ -100,12 +100,8 @@ tooltip label {
     color: @critical;
 }
 
-#network {
-    margin-left: 8px;
-}
-
-#pulseaudio {
-    margin-right: 6px;
+#network, #bluetooth, #pulseaudio {
+    margin: 0 2px;
 }
 
 #pulseaudio.muted {

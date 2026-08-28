@@ -15,7 +15,7 @@
 
     "modules-left": ["hyprland/workspaces"],
     "modules-center": ["clock"],
-    "modules-right": ["cpu", "memory", "temperature", "network", "pulseaudio", "custom/kb_layout", "tray", "custom/notification"],
+    "modules-right": ["cpu", "memory", "temperature", "network", "bluetooth", "pulseaudio", "custom/kb_layout", "tray", "custom/notification"],
 
     "hyprland/workspaces": {
         "format": "{id}",
@@ -71,6 +71,19 @@
         "tooltip-format-ethernet": "Ethernet\n{ifname} · {ipaddr}",
         "tooltip-format-disconnected": "Network disconnected",
         "on-click": "wifi-menu.sh"
+    },
+
+    "bluetooth": {
+        "format-on": "󰂯",
+        "format-off": "󰂲",
+        "format-disabled": "󰂲",
+        "format-connected": "󰂯",
+        "format-connecting": "󰂱",
+        "tooltip-format-on": "Bluetooth: on",
+        "tooltip-format-off": "Bluetooth: off",
+        "tooltip-format-connected": "{device_alias}",
+        "tooltip-format-disconnected": "No device connected",
+        "on-click": "overskride"
     },
 
     "pulseaudio": {
