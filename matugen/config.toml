@@ -1,0 +1,39 @@
+[config]
+mode = "dark"
+scheme = "tonal-spot"
+prefer = "closest-to-fallback"
+fallback_color = "#94cdf7"
+
+[templates]
+
+[templates.hypr]
+input_path = "/home/amado/.config/matugen/templates/hypr-colors.lua"
+output_path = "/home/amado/.config/hypr/config/colors.lua"
+
+[templates.waybar]
+input_path = "/home/amado/.config/matugen/templates/waybar-colors.css"
+output_path = "/home/amado/.config/waybar/colors.css"
+
+[templates.swaync]
+input_path = "/home/amado/.config/matugen/templates/swaync-colors.css"
+output_path = "/home/amado/.config/swaync/colors.css"
+
+[templates.gtk3]
+input_path = "/home/amado/.config/matugen/templates/gtk-colors.css"
+output_path = "/home/amado/.config/gtk-3.0/colors.css"
+
+[templates.gtk4]
+input_path = "/home/amado/.config/matugen/templates/gtk-colors.css"
+output_path = "/home/amado/.config/gtk-4.0/colors.css"
+
+[templates.ghostty]
+input_path = "/home/amado/.config/matugen/templates/ghostty-theme"
+output_path = "/home/amado/.config/ghostty/themes/current"
+
+[templates.qt]
+input_path = "/home/amado/.config/matugen/templates/qt-colors.conf"
+output_path = "/home/amado/.config/qt6ct/colors/current.conf"
+
+[templates.btop]
+input_path = "/home/amado/.config/matugen/templates/btop-theme"
+output_path = "/home/amado/.config/btop/themes/current.theme"

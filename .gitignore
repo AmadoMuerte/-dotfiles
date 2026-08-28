@@ -1,15 +1,21 @@
 /*
 
 !.gitignore
+!/README.md
 
 !/hypr/
 !/waybar/
 !/fuzzel/
 !/ghostty/
 !/fastfetch/
+!/matugen/
+
+/matugen/templates/*
+!/matugen/templates/hypr-colors.lua
 
 /hypr/monitors.conf
 /hypr/workspaces.conf
+/hypr/monitors.lua
 /hypr/hyprland.conf.save
 
 /waybar/config.jsonc.save
