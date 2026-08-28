@@ -1,0 +1,154 @@
+/* ============================================================
+ *  Waybar — layout and design (static, user-owned)
+ *  Colors come from colors.css (palette, @define-color).
+ * ============================================================ */
+@import url("colors.css");
+
+* {
+    font-family: "JetBrainsMono Nerd Font", "Noto Sans", sans-serif;
+    font-size: 13px;
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+}
+
+window#waybar {
+    background: alpha(@bg, 0.94);
+    color: @fg;
+    border-bottom: 1px solid @border;
+}
+
+tooltip {
+    background: @bg;
+    border: 1px solid @border;
+    border-radius: 8px;
+    color: @fg;
+}
+
+tooltip label {
+    color: @fg;
+}
+
+#workspaces button {
+    background: transparent;
+    color: @fg-dim;
+    padding: 0 9px;
+    margin: 3px 2px;
+    border-radius: 5px;
+}
+
+#workspaces button:first-child {
+    margin-left: 5px;
+}
+
+#workspaces button.active {
+    background: @bg-hover;
+    color: @accent;
+}
+
+#workspaces button:hover {
+    background: @bg-hover;
+    color: @fg;
+}
+
+#window {
+    color: @fg-dim;
+    padding: 0 10px;
+    font-weight: 500;
+}
+
+#cpu, #memory, #temperature, #network, #pulseaudio, #custom-kb_layout,
+#tray, #custom-notification, #clock {
+    padding: 0 7px;
+    color: @fg;
+}
+
+#cpu, #memory, #temperature {
+    font-weight: 500;
+    color: @fg-dim;
+    background: transparent;
+    margin: 5px 0;
+    padding: 0 10px;
+    border-right: 1px solid @border;
+}
+
+#cpu {
+    color: @accent;
+    padding-left: 8px;
+}
+
+#temperature {
+    padding-right: 10px;
+    border-right: none;
+}
+
+#cpu:hover, #memory:hover, #temperature:hover {
+    color: @fg;
+    background: @bg-alt;
+    border-radius: 4px;
+}
+
+#temperature.critical {
+    color: @critical;
+}
+
+#memory.warning {
+    color: @accent-dim;
+}
+
+#memory.critical, #network.disconnected {
+    color: @critical;
+}
+
+#network {
+    margin-left: 8px;
+}
+
+#pulseaudio {
+    margin-right: 6px;
+}
+
+#pulseaudio.muted {
+    color: @fg-dim;
+}
+
+#custom-kb_layout {
+    color: @accent;
+}
+
+#custom-notification {
+    color: @accent;
+    padding-right: 8px;
+}
+
+#custom-notification.has-notifications {
+    color: @fg;
+}
+
+#clock {
+    font-weight: 700;
+}
+
+#tray {
+    padding: 0 8px;
+    margin-left: 6px;
+    margin-right: 4px;
+}
+
+#tray > widget {
+    margin: 4px 2px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background: @bg-hover;
+}
+
+#workspaces button.urgent {
+    color: @critical;
+    background: @bg-alt;
+}

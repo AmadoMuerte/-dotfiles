@@ -1,8 +1,0 @@
-{
-  "name": "shojiwm-user-config",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "shoji_wm": "file:/usr/lib/shojiwm/packages/shoji_wm"
-  }
-}
