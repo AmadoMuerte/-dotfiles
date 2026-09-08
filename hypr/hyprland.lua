@@ -49,7 +49,7 @@ hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd('grim -g "$(slurp)" - | swapp
 
 -- Desktop tools
 hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("hyprlock"))
-hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("wallpaper.sh --picker"))
+hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("/home/amado/.local/bin/wallpaper.sh --picker"))
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd('cliphist list | fuzzel --dmenu -p "Clipboard: " | cliphist decode | wl-copy'))
 
 -- Hardware keys

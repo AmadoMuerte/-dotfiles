@@ -4,134 +4,161 @@
 //  Reload style: killall -SIGUSR2 waybar
 // ============================================================
 {
-    "layer": "top",
-    "position": "top",
-    "height": 34,
-    "spacing": 0,
-    "margin-top": 4,
-    "margin-left": 0,
-    "margin-right": 0,
-    "margin-bottom": 0,
+  "layer": "top",
+  "position": "top",
+  "height": 34,
+  "spacing": 0,
+  "margin-top": 0,
+  "margin-left": 0,
+  "margin-right": 0,
+  "margin-bottom": 0,
 
-    "modules-left": ["hyprland/workspaces"],
-    "modules-center": ["clock"],
-    "modules-right": ["cpu", "memory", "temperature", "network", "bluetooth", "pulseaudio", "custom/kb_layout", "tray", "custom/notification"],
+  "modules-left": ["hyprland/workspaces", "custom/ai-quota"],
+  "modules-center": ["clock"],
+  "modules-right": [
+    "cpu",
+    "memory",
+    "temperature#cpu",
+    "temperature#gpu",
+    "network",
+    "bluetooth",
+    "pulseaudio",
+    "custom/kb_layout",
+    "tray",
+    "custom/notification",
+  ],
 
-    "hyprland/workspaces": {
-        "format": "{id}",
-        "format-icons": {
-            "1": "1",
-            "2": "2",
-            "3": "3",
-            "4": "4",
-            "5": "5",
-            "6": "6",
-            "7": "7",
-            "8": "8",
-            "9": "9",
-            "10": "10",
-            "gaming": "G"
-        },
-        "on-click": "activate"
+  "hyprland/workspaces": {
+    "format": "{id}",
+    "format-icons": {
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "4": "4",
+      "5": "5",
+      "6": "6",
+      "7": "7",
+      "8": "8",
+      "9": "9",
+      "10": "10",
+      "gaming": "G",
     },
+    "on-click": "activate",
+  },
 
-    "cpu": {
-        "format": "CPU {usage}%",
-        "interval": 5,
-        "tooltip-format": "Processor load: {usage}%",
-        "on-click": "ghostty -e btop"
+  "custom/ai-quota": {
+    "exec": "$HOME/.config/waybar/scripts/ai-quota.sh",
+    "return-type": "json",
+    "interval": 60,
+    "signal": 8,
+    "tooltip": true,
+    "on-click": "$HOME/.config/waybar/scripts/ai-quota.sh --refresh",
+  },
+
+  "cpu": {
+    "format": "CPU {usage}%",
+    "interval": 5,
+    "tooltip-format": "Processor load: {usage}%",
+    "on-click": "ghostty -e btop",
+  },
+
+  "memory": {
+    "format": "RAM {used:0.1f}G",
+    "interval": 5,
+    "tooltip-format": "Memory: {used:0.1f} of {total:0.1f} GiB ({percentage}%)",
+    "states": {
+      "warning": 80,
+      "critical": 90,
     },
+    "on-click": "ghostty -e btop",
+  },
 
-    "memory": {
-        "format": "RAM {used:0.1f}G",
-        "interval": 5,
-        "tooltip-format": "Memory: {used:0.1f} of {total:0.1f} GiB ({percentage}%)",
-        "states": {
-            "warning": 80,
-            "critical": 90
-        },
-        "on-click": "ghostty -e btop"
+  "temperature#cpu": {
+    "hwmon-path": "/sys/class/hwmon/hwmon1/temp1_input",
+    "format": " {temperatureC}°C",
+    "critical-threshold": 85,
+    "tooltip-format": "CPU temperature: {temperatureC}°C",
+    "on-click": "ghostty -e btop",
+  },
+
+  "temperature#gpu": {
+    "hwmon-path": "/sys/class/hwmon/hwmon5/temp1_input",
+    "format": "󰢮 {temperatureC}°C",
+    "critical-threshold": 90,
+    "tooltip-format": "GPU temperature: {temperatureC}°C",
+    "on-click": "ghostty -e btop",
+  },
+
+  "network": {
+    "format-wifi": "󰖩",
+    "format-ethernet": "󰈀",
+    "format-linked": "󰈀",
+    "format-disconnected": "󰖪",
+    "tooltip-format-wifi": "{essid}\n{ifname} · {ipaddr}\nSignal: {signalStrength}%",
+    "tooltip-format-ethernet": "Ethernet\n{ifname} · {ipaddr}",
+    "tooltip-format-disconnected": "Network disconnected",
+    "on-click": "networkmanager_dmenu",
+  },
+
+  "bluetooth": {
+    "format-on": "󰂯",
+    "format-off": "󰂲",
+    "format-disabled": "󰂲",
+    "format-connected": "󰂯",
+    "format-connecting": "󰂱",
+    "tooltip-format-on": "Bluetooth: on",
+    "tooltip-format-off": "Bluetooth: off",
+    "tooltip-format-connected": "{device_alias}",
+    "tooltip-format-disconnected": "No device connected",
+    "on-click": "overskride",
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": "󰖁",
+    "format-icons": {
+      "default": ["󰕿", "󰖀", "󰕾"],
     },
+    "on-click": "pavucontrol",
+    "on-click-right": "pamixer -t",
+    "on-scroll-up": "pamixer -i 5",
+    "on-scroll-down": "pamixer -d 5",
+  },
 
-    "temperature": {
-        "thermal-zone": 0,
-        "hwmon-path": "/sys/class/hwmon/hwmon0/temp1_input",
-        "format": "{temperatureC}°C",
-        "critical-threshold": 80,
-        "tooltip-format": "CPU temperature: {temperatureC}°C",
-        "on-click": "ghostty -e btop"
+  "custom/kb_layout": {
+    "exec": "hyprctl devices -j | jq -r '[.keyboards[] | select(.main == true)][0].active_keymap' | sed 's/English.*/EN/; s/Russian.*/RU/'",
+    "interval": 1,
+    "tooltip": false,
+  },
+
+  "tray": {
+    "icon-size": 17,
+    "spacing": 7,
+  },
+
+  "custom/notification": {
+    "exec": "swaync-client --subscribe-waybar",
+    "return-type": "json",
+    "on-click": "swaync-client -t",
+    "on-click-right": "swaync-client -d",
+    "format": "{icon}",
+    "format-icons": {
+      "notification": "󱅫",
+      "none": "󰂚",
+      "dnd-notification": "󰂛",
+      "dnd-none": "󰂛",
+      "inhibited-notification": "󰂛",
+      "inhibited-none": "󰂛",
+      "dnd-inhibited-notification": "󰂛",
+      "dnd-inhibited-none": "󰂛",
     },
+    "tooltip": true,
+  },
 
-    "network": {
-        "format-wifi": "󰖩",
-        "format-ethernet": "󰈀",
-        "format-linked": "󰈀",
-        "format-disconnected": "󰖪",
-        "tooltip-format-wifi": "{essid}\n{ifname} · {ipaddr}\nSignal: {signalStrength}%",
-        "tooltip-format-ethernet": "Ethernet\n{ifname} · {ipaddr}",
-        "tooltip-format-disconnected": "Network disconnected",
-        "on-click": "wifi-menu.sh"
-    },
-
-    "bluetooth": {
-        "format-on": "󰂯",
-        "format-off": "󰂲",
-        "format-disabled": "󰂲",
-        "format-connected": "󰂯",
-        "format-connecting": "󰂱",
-        "tooltip-format-on": "Bluetooth: on",
-        "tooltip-format-off": "Bluetooth: off",
-        "tooltip-format-connected": "{device_alias}",
-        "tooltip-format-disconnected": "No device connected",
-        "on-click": "overskride"
-    },
-
-    "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-muted": "󰖁",
-        "format-icons": {
-            "default": ["󰕿", "󰖀", "󰕾"]
-        },
-        "on-click": "pavucontrol",
-        "on-click-right": "pamixer -t",
-        "on-scroll-up": "pamixer -i 5",
-        "on-scroll-down": "pamixer -d 5"
-    },
-
-    "custom/kb_layout": {
-        "exec": "hyprctl devices -j | jq -r '[.keyboards[] | select(.main == true)][0].active_keymap' | sed 's/English.*/EN/; s/Russian.*/RU/'",
-        "interval": 1,
-        "tooltip": false
-    },
-
-    "tray": {
-        "icon-size": 17,
-        "spacing": 7
-    },
-
-    "custom/notification": {
-        "exec": "swaync-client --subscribe-waybar",
-        "return-type": "json",
-        "on-click": "swaync-client -t",
-        "on-click-right": "swaync-client -d",
-        "format": "{icon}",
-        "format-icons": {
-            "notification": "󱅫",
-            "none": "󰂚",
-            "dnd-notification": "󰂛",
-            "dnd-none": "󰂛",
-            "inhibited-notification": "󰂛",
-            "inhibited-none": "󰂛",
-            "dnd-inhibited-notification": "󰂛",
-            "dnd-inhibited-none": "󰂛"
-        },
-        "tooltip": true
-    },
-
-    "clock": {
-        "format": "{:%H:%M}",
-        "tooltip-format": "{:%A %d %B %Y}",
-        "interval": 30,
-        "on-click": "gnome-calendar"
-    }
+  "clock": {
+    "format": "{:%H:%M}",
+    "tooltip-format": "{:%A %d %B %Y}",
+    "interval": 30,
+    "on-click": "gnome-calendar",
+  },
 }

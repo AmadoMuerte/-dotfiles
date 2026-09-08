@@ -58,7 +58,7 @@ tooltip label {
 }
 
 #cpu, #memory, #temperature, #network, #pulseaudio, #custom-kb_layout,
-#tray, #custom-notification, #clock {
+#tray, #custom-notification, #custom-ai-quota, #custom-deepseek, #clock {
     padding: 0 7px;
     color: @fg;
 }
@@ -142,6 +142,46 @@ tooltip label {
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
     background: @bg-hover;
+}
+
+/* AI quota — worst active limit in the bar, full breakdown on hover */
+#custom-ai-quota {
+    color: @accent;
+    font-weight: 700;
+    padding: 0 10px;
+    margin: 4px 3px;
+    border-radius: 5px;
+}
+
+#custom-ai-quota:hover {
+    background: @bg-alt;
+    color: @fg;
+}
+
+#custom-ai-quota.warning {
+    color: @accent-dim;
+}
+
+#custom-ai-quota.critical {
+    color: @critical;
+}
+
+#custom-ai-quota.error {
+    color: @critical;
+}
+
+/* DeepSeek balance — available account funds (USD/RMB), distinct module */
+#custom-deepseek {
+    color: @accent-dim;
+    font-weight: 700;
+    padding: 0 10px;
+    margin: 4px 3px;
+    border-radius: 5px;
+}
+
+#custom-deepseek:hover {
+    background: @bg-alt;
+    color: @fg;
 }
 
 #workspaces button.urgent {
