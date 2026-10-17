@@ -1,14 +1,5 @@
-font-family = JetBrains Mono
-font-size = 13
-# background-opacity = 0.8
-# theme = Chalk
-#theme = Catppuccin Mocha
-
-
-theme = current
-background = 000000
-background-opacity = 0.85
-background-blur = false
+config-file = theme-options
+theme = desktop-theme
 
 confirm-close-surface = false
 
